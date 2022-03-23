@@ -3,14 +3,27 @@
 </svelte:head>
 
 <script>
-    import { APP_URL } from '../../globals';
+    import { HEROKU_URL } from '../../globals';
+    import { browser } from '$app/env';
+    import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
 
     async function fetchProfessors() {
-        const response = await fetch(APP_URL + '/rest/professors',
+        const response = await fetch(HEROKU_URL + '/rest/professor',
         {
             method: 'GET',
         });
         return response.json();
+    }
+
+    async function fetchDelete(id) {
+        async () => {
+            const response = await fetch(VERCEL_URL + '/rest/professor?id=' + id,
+            {
+                method: 'DELETE',
+            });
+            return response.json();
+        }
     }
 
     fetchProfessors().then(data => {
@@ -27,6 +40,10 @@
             const name = document.createElement('span');
             name.innerText = professor.name;
             li.appendChild(name);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.onClick = fetchDelete();
+            li.appendChild(deleteButton);
             
             list.appendChild(li);
         });
@@ -42,8 +59,5 @@
     <div class="professor-list-container">
         <button id="back-button" on:click={doBack}>Back</button>
         <ul id="professor-list" />
-        <button id="edit-button" on:click={() => {
-                 window.location.href = window.location.origin + '/professor/';
-        }}>Edit</button>
     </div>
 </body>
