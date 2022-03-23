@@ -66,8 +66,8 @@
             <button type="submit" class="btn btn-primary" on:click={createApplicant} >Submit</button>
         </form>
     </div>
-</body>
 
-<style>
-    
-</style>
+    <style lang="scss">
+        @import '../styles/global.scss';
+    </style>
+</body>

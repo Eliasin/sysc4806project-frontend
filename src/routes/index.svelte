@@ -29,9 +29,5 @@
 
     <style lang="scss">
         @import '../styles/global.scss';
-        
-        button {
-            color: blue;
-        }
     </style>
 </body>

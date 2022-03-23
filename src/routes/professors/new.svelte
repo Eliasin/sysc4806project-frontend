@@ -35,4 +35,8 @@
             <button type="submit" class="btn btn-primary" on:click={createProfessor}>Submit</button>
         </form>
     </div>
+
+    <style lang="scss">
+        @import '../styles/global.scss';
+    </style>
 </body>
