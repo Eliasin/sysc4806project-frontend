@@ -48,6 +48,7 @@
 
                 const deleteButton = document.createElement('button');
                 deleteButton.onClick = fetchDelete();
+                deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
                 
                 list.appendChild(li);
