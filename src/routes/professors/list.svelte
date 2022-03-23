@@ -16,13 +16,13 @@
     }
 
     async function fetchDelete(id) {
-        return async () => {
+        //return async () => {
             const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
             {
                 method: 'DELETE',
             });
             return response.json();
-        };
+        //};
     }
 
     function doBack() {
