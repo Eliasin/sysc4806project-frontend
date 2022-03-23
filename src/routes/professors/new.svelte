@@ -23,6 +23,7 @@
 
 <body>
     <div class="professor-form-container">
+        <button id="back-button" on:click={doBack}>Back</button>
         <form id="professor-form">
             <div class="form-group">
                 <label for="name">Name</label>
