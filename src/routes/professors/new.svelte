@@ -1,9 +1,8 @@
 <script>
     import { HEROKU_URL, VERCEL_URL } from '../../globals';
     import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
 
-    async function createProfessor () {
+    async function createProfessor() {
         const professorJSON = JSON.stringify({
             name: document.getElementById('name').value,
         })
@@ -33,7 +32,7 @@
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
             </div>
-            <button type="submit" class="btn btn-primary" onclick="createProfessor()">Submit</button>
+            <button type="submit" class="btn btn-primary" on:click={createProfessor}>Submit</button>
         </form>
     </div>
 </body>
