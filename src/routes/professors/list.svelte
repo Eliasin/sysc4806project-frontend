@@ -26,33 +26,34 @@
         }
     }
 
-    fetchProfessors().then(data => {
-        const list = document.getElementById('professor-list');
-
-        data.forEach(professor => {
-            const li = document.createElement('li');
-            li.class = 'professor-list-item';
-            
-            const id = document.createElement('span');
-            id.innerText = professor.id;
-            li.appendChild(id);
-            
-            const name = document.createElement('span');
-            name.innerText = professor.name;
-            li.appendChild(name);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.onClick = fetchDelete();
-            li.appendChild(deleteButton);
-            
-            list.appendChild(li);
-        });
-    });
-
     function doBack() {
         goto(VERCEL_URL + '/professors/');
     }
 
+    onMount(() => {
+        fetchProfessors().then(data => {
+            const list = document.getElementById('professor-list');
+
+            data.forEach(professor => {
+                const li = document.createElement('li');
+                li.class = 'professor-list-item';
+                
+                const id = document.createElement('span');
+                id.innerText = professor.id;
+                li.appendChild(id);
+                
+                const name = document.createElement('span');
+                name.innerText = professor.name;
+                li.appendChild(name);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.onClick = fetchDelete();
+                li.appendChild(deleteButton);
+                
+                list.appendChild(li);
+            });
+        });
+    })
 </script>
 
 <body>
