@@ -26,10 +26,6 @@
         };
     }
 
-    function doBack() {
-        window.location.pathname = "/professors/";
-    }
-
     onMount(() => {
         fetchProfessors().then(data => {
             const list = document.getElementById('professor-list');
@@ -59,6 +55,23 @@
             });
         });
     })
+
+    /*
+    async function fetchEdit() {
+        async () => {
+            const response = await fetch(APP_URL + '/professors/edit?id=',
+            {
+                method: 'POST',
+            });
+            return response.json();
+        }
+    }
+    */
+
+    function doBack() {
+        goto(VERCEL_URL + '/professors/');
+    }
+
 </script>
 
 <body>
