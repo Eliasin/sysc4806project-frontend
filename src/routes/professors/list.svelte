@@ -26,7 +26,12 @@
         }
     }
 
-    fetchProfessors().then(data => {
+    function doBack() {
+        goto(VERCEL_URL + '/professors/');
+    }
+
+    onMount(() => {
+        fetchProfessors().then(data => {
         const list = document.getElementById('professor-list');
 
         data.forEach(professor => {
@@ -48,11 +53,6 @@
             list.appendChild(li);
         });
     });
-
-    function doBack() {
-        goto(VERCEL_URL + '/professors/');
-    }
-
 </script>
 
 <body>
