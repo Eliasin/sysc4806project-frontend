@@ -4,6 +4,7 @@
 
 <script>
     import { HEROKU_URL, VERCEL_URL } from '../../globals';
+    import { browser } from '$app/env';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
 
@@ -26,7 +27,7 @@
     }
 
     function doBack() {
-        goto(VERCEL_URL + '/professors/');
+        window.location.pathname = "/professors/";
     }
 
     onMount(() => {
@@ -49,6 +50,10 @@
                 deleteButton.onclick = fetchDelete(professor.id);
                 deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
+
+                const editButton = createElement('button');
+                editButton.onclick = goto(VERCEL_URL + '/professors/edit?id=' + id);
+                li.appendChild(editButton);
                 
                 list.appendChild(li);
             });
