@@ -17,13 +17,13 @@
     }
 
     async function fetchDelete(id) {
-        async () => {
+        return async () => {
             const response = await fetch(VERCEL_URL + '/rest/professor?id=' + id,
             {
                 method: 'DELETE',
             });
             return response.json();
-        }
+        };
     }
 
     function doBack() {
