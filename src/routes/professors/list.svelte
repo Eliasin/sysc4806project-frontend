@@ -16,13 +16,12 @@
     }
 
     async function fetchDelete(id) {
-        return async () => {
-            const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
-            {
-                method: 'DELETE',
-            });
-            return response.json();
-        };
+        console.log('button pressed, id:' + id);
+        const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
+        {
+            method: 'DELETE',
+        });
+        return response.json();
     }
 
     function doBack() {
@@ -46,7 +45,7 @@
                 li.appendChild(name);
 
                 const deleteButton = document.createElement('button');
-                deleteButton.onclick = fetchDelete(professor.id);
+                deleteButton.onclick = () => fetchDelete(professor.id);
                 deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
                 
