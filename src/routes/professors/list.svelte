@@ -21,6 +21,7 @@
         {
             method: 'DELETE',
         });
+        window.location.refresh();
         return response.json();
     }
 
