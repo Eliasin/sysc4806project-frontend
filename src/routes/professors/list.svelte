@@ -17,7 +17,7 @@
 
     async function fetchDelete(id) {
         return async () => {
-            const response = await fetch(VERCEL_URL + '/rest/professor?id=' + id,
+            const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
             {
                 method: 'DELETE',
             });
