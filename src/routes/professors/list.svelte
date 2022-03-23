@@ -16,7 +16,7 @@
     }
 
     async function fetchDelete(id) {
-        return async () => {
+        return async (id) => {
             const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
             {
                 method: 'DELETE',
