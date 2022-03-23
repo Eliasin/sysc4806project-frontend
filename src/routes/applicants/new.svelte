@@ -1,7 +1,9 @@
 <script>
-    import { APP_URL } from '../../globals';
+    import { HEROKU_URL, VERCEL_URL } from '../../globals';
+    import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
 
-    async function createApplicant () {
+    async function createApplicant() {
         const applicantJSON = JSON.stringify({
             name: document.getElementById('name').value,
             phone_number: document.getElementById('phone_number').value,
@@ -9,38 +11,40 @@
             cv_path: document.getElementById('cv_path').value,
             diploma_path: document.getElementById('diploma_path').value,
             grade_audit_path: document.getElementById('grade_audit_path').value,
-            desired_field_id: document.getElementById('desired_field_id').value,
+            desired_field_id: parseInt(document.getElementById('desired_field_id').value),
         })
         
         if (applicantJSON.includes('""')) {
             return;
         }
         
-        await fetch(APP_URL + '/rest/applicant', {
+        await fetch(HEROKU_URL + '/rest/applicant', {
             method: 'POST',
             body: applicantJSON,
         });
     
-        window.location.href = APP_URL + '/applicants/';
+        goto(VERCEL_URL + '/applicants/list');
     }
 
     async function fetchResearchFields() {
-        const response = await fetch(APP_URL + '/rest/research_fields',
+        const response = await fetch(HEROKU_URL + '/rest/research-fields',
         {
             method: 'GET',
         });
         return response.json();
     }
 
-    fetchResearchFields().then(data => {
-        const select = document.getElementById('desired_field_id');
-        data.forEach(field => {
-            const option = document.createElement('option');
-            option.value = field.id;
-            option.text = field.name;
-            select.appendChild(option);
+    onMount(() => {
+        fetchResearchFields().then(data => {
+            const select = document.getElementById('desired_field_id');
+            data.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field.id;
+                option.text = field.name;
+                select.appendChild(option);
+            });
         });
-    });
+    })
 </script>
 
 <body>
@@ -74,7 +78,7 @@
                 <label for="desired_field_id">Desired Field</label>
                 <select class="form-control" id="desired_field_id" />
             </div>
-            <button type="submit" class="btn btn-primary" onclick="createApplicant()">Submit</button>
+            <button type="submit" class="btn btn-primary" on:click={createApplicant} >Submit</button>
         </form>
     </div>
 </body>
