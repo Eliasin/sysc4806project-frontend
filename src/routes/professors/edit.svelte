@@ -83,7 +83,7 @@
     })
 
     function doBack() {
-        goto(VERCEL_URL + '/professors/');
+        goto(VERCEL_URL + '/professors/list');
     }
 
 </script>
