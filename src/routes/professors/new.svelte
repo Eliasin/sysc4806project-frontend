@@ -12,7 +12,7 @@
             return;
         }
         
-        await fetch(APP_URL + '/rest/professor', {
+        await fetch(HEROKU_URL + '/rest/professor', {
             method: 'POST',
             body: professorJSON,
         });
