@@ -60,18 +60,17 @@
         
         const cvFile = document.getElementById('cv-file');
         if(cvFile.files.length) {
-            console.log(await cvFile.files[0].arrayBuffer());
-            formData.append('cv_file', cvFile.files[0]);
+            formData.append('cv-file', cvFile.files[0]);
         }
 
         const diplomaFile = document.getElementById('diploma-file');
         if(diplomaFile.files.length) {
-            formData.append('diploma_file', diplomaFile.files[0]);
+            formData.append('diploma-file', diplomaFile.files[0]);
         }
 
         const gradeAuditFile = document.getElementById('grade-audit-file');
         if(gradeAuditFile.files.length) {
-            formData.append('grade_audit_file', gradeAuditFile.files[0]);
+            formData.append('grade-audit-file', gradeAuditFile.files[0]);
         }
 
         await fetch(HEROKU_URL + '/rest/applicant/files?applicant_id=' + applicantId,
