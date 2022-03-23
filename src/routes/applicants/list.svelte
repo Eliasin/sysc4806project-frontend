@@ -3,7 +3,7 @@
 </svelte:head>
 
 <script>
-    import { HEROKU_URL } from '../../globals';
+    import { HEROKU_URL, VERCEL_URL } from '../../globals';
     import { browser } from '$app/env';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
@@ -47,18 +47,11 @@
                 const email = document.createElement('span');
                 email.innerText = applicant.email;
                 li.appendChild(email);
-                
-                const cvPath = document.createElement('span');
-                cvPath.innerText = applicant.cv_path;
-                li.appendChild(cvPath);
-                
-                const diplomaPath = document.createElement('span');
-                diplomaPath.innerText = applicant.diploma_path;
-                li.appendChild(diplomaPath);
-                
-                const gradeAuditPath = document.createElement('span');
-                gradeAuditPath.innerText = applicant.grade_audit_path;
-                li.appendChild(gradeAuditPath);
+
+                const editButton = document.createElement('button');
+                editButton.onclick = () => goto(VERCEL_URL + '/applicants/edit?id=' + applicant.id);
+                editButton.textContent = 'Edit';
+                li.appendChild(editButton);
                 
                 list.appendChild(li);
             });
@@ -71,5 +64,9 @@
         <button id="back-button" on:click={doBack}>Back</button>
         <ul id="applicant-list" />
     </div>
+
+    <style lang="scss">
+        @import '../../styles/global.scss';
+    </style>
 </body>
 

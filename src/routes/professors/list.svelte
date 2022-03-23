@@ -80,4 +80,8 @@
         <button id="back-button" on:click={doBack}>Back</button>
         <ul id="professor-list" />
     </div>
+
+    <style lang="scss">
+        @import '../../styles/global.scss';
+    </style>
 </body>
