@@ -19,6 +19,10 @@
     
         window.location.href = APP_URL + '/professor/';
     }
+
+    function doBack() {
+        goto(VERCEL_URL + '/applicants/');
+    }
 </script>
 
 <body>
