@@ -9,7 +9,7 @@
     import { onMount } from 'svelte';
 
     async function fetchProfessors() {
-        const response = await fetch(HEROKU_URL + '/rest/professor',
+        const response = await fetch(HEROKU_URL + '/rest/professors',
         {
             method: 'GET',
         });
