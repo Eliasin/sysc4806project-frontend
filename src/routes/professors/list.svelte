@@ -4,6 +4,7 @@
 
 <script>
     import { HEROKU_URL, VERCEL_URL } from '../../globals';
+    import { browser } from '$app/env';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
 
@@ -22,10 +23,6 @@
             method: 'DELETE',
         });
         return response.json();
-    }
-
-    function doBack() {
-        goto(VERCEL_URL + '/professors/');
     }
 
     onMount(() => {
@@ -48,11 +45,33 @@
                 deleteButton.onclick = () => fetchDelete(professor.id);
                 deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => goto(VERCEL_URL + '/professors/edit?id=' + professor.id);
+                li.appendChild(editButton);
                 
                 list.appendChild(li);
             });
         });
     })
+
+    /*
+    async function fetchEdit() {
+        async () => {
+            const response = await fetch(APP_URL + '/professors/edit?id=',
+            {
+                method: 'POST',
+            });
+            return response.json();
+        }
+    }
+    */
+
+    function doBack() {
+        goto(VERCEL_URL + '/professors/');
+    }
+
 </script>
 
 <body>

@@ -30,6 +30,7 @@
   },
   "type": "module",
   "dependencies": {
-    "node-sass": "^7.0.1"
+    "node-sass": "^7.0.1",
+    "sass": "^1.49.9"
   }
 }
