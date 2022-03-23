@@ -3,7 +3,7 @@
 </svelte:head>
 
 <script>
-    import { HEROKU_URL } from '../../globals';
+    import { HEROKU_URL, VERCEL_URL } from '../../globals';
     import { browser } from '$app/env';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
