@@ -46,7 +46,7 @@
                 li.appendChild(name);
 
                 const deleteButton = document.createElement('button');
-                deleteButton.onClick = fetchDelete(professor.id);
+                deleteButton.onclick = fetchDelete(professor.id);
                 deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
                 
