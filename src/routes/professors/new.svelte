@@ -17,11 +17,11 @@
             body: professorJSON,
         });
     
-        window.location.href = APP_URL + '/professor/';
+        goto(VERCEL_URL + '/professors/list');
     }
 
     function doBack() {
-        goto(VERCEL_URL + '/applicants/');
+        goto(VERCEL_URL + '/professors/');
     }
 </script>
 
