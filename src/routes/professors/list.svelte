@@ -47,8 +47,9 @@
                 deleteButton.textContent = 'Delete';
                 li.appendChild(deleteButton);
 
-                const editButton = createElement('button');
-                editButton.onclick = goto(VERCEL_URL + '/professors/edit?id=' + id);
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => goto(VERCEL_URL + '/professors/edit?id=' + professor.id);
                 li.appendChild(editButton);
                 
                 list.appendChild(li);
