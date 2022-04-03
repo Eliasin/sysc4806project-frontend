@@ -2,67 +2,40 @@
     <title>SYSC4806 Project - List Applicants</title>
 </svelte:head>
 
-<script>
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
-    import { browser } from '$app/env';
+<script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import { fetchApplicants } from '../../request/applicant';
+    import { fetchResearchFields } from '../../request/research-field';
 
-    async function fetchApplicants() {
-        const response = await fetch(HEROKU_URL + '/rest/applicants',
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
+    let applicants: Array<Applicant> = [];
+    let researchFields: Array<ResearchField> = []; 
 
     function doBack() {
-        goto(VERCEL_URL + '/applicants/');
+        goto('/applicants/');
     }
 
-    onMount(() => {
-        fetchApplicants().then(data => {
-            const list = document.getElementById('applicant-list');
-
-            data.forEach(applicant => {
-                const li = document.createElement('li');
-                li.class = 'applicant-list-item';
-                
-                const id = document.createElement('span');
-                id.innerText = applicant.id;
-                li.appendChild(id);
-                
-                const desiredFieldId = document.createElement('span');
-                desiredFieldId.innerText = applicant.desired_field_id;
-                li.appendChild(desiredFieldId);
-                
-                const name = document.createElement('span');
-                name.innerText = applicant.name;
-                li.appendChild(name);
-                
-                const phoneNumber = document.createElement('span');
-                phoneNumber.innerText = applicant.phone_number;
-                li.appendChild(phoneNumber);
-                
-                const email = document.createElement('span');
-                email.innerText = applicant.email;
-                li.appendChild(email);
-
-                const editButton = document.createElement('button');
-                editButton.onclick = () => goto(VERCEL_URL + '/applicants/edit?id=' + applicant.id);
-                editButton.textContent = 'Edit';
-                li.appendChild(editButton);
-                
-                list.appendChild(li);
-            });
-        });
-    })
+    onMount(async () => {
+        applicants = await fetchApplicants();
+        researchFields = await fetchResearchFields();
+    });
 </script>
 
 <body>
     <div class="applicant-list-container">
         <button id="back-button" on:click={doBack}>Back</button>
-        <ul id="applicant-list" />
+        <ul id="applicant-list">
+            {#each applicants as applicant}
+            <li class='applicant-list-item'>
+                <span>{applicant.id}</span>
+                <span>{applicant.desired_field_id}</span>
+                <span>{applicant.name}</span>
+                <span>{applicant.phone_number}</span>
+                <span>{applicant.email}</span>
+                <button on:click={() => goto('/applicants/edit?id=' + applicant.id)}>Edit</button>
+            </li>
+            {/each}
+        </ul>
     </div>
 
     <style lang="scss">

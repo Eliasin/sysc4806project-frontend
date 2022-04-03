@@ -1,94 +1,33 @@
-<script>
+<script lang="ts">
     import { page } from '$app/stores';
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField } from '../../request/professor';
 
-    let professorId;
-    page.subscribe(currentPage => { professorId = currentPage.url.searchParams.get('id'); });
+    let professorId = $page.url.searchParams.get('id');
+    let professor: Professor | null = null;
+    let researchFields: Array<ResearchField> = [];
 
-    async function editProfessor () {
-        const professorJSON = JSON.stringify({
-            name: document.getElementById('name').value,
-        })
-        
-        await fetch(HEROKU_URL + '/rest/professor?prof_id=' + professorId, {
-            method: 'PUT',
-            body: professorJSON,
-        });
-    
-        goto(VERCEL_URL + '/professors/list');
+    async function requestEditProfessorName() {
+        let name = (document.getElementById('name') as HTMLInputElement).value;
+        await editProfessorName(professorId, name);
     }
 
-    async function fetchProfessor() {
-        const response = await fetch(HEROKU_URL + '/rest/professor?id=' + professorId,
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
-    
-    async function fetchResearchFields() {
-        const response = await fetch(HEROKU_URL + '/rest/professor/research-field?prof_id=' + professorId,
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
-
-    onMount(() => {
-        fetchProfessor().then(data => {
-            const select = document.getElementById(professorId);
-            data.forEach(professor => {
-                const option = document.createElement('option');
-                option.value = professor.id;
-                option.text = professor.name;
-                select.appendChild(option);
-            });
-        });
-
-        fetchResearchFields().then(data => {
-            const select = document.getElementById('field_id');
-            data.forEach(field => {
-                const option = document.createElement('option');
-                option.value = field.id;
-                option.text = field.name;
-                select.appendChild(option);
-            });
-        });
-
-        fetchProfessorsResearchFields().then(data => {
-            const list = document.getElementById('field-list');
-
-            data.forEach(field => {
-                const li = document.createElement('li');
-                li.class = 'field-list-item';
-                
-                const id = document.createElement('span');
-                id.innerText = field.id;
-                li.appendChild(id);
-                
-                const name = document.createElement('span');
-                name.innerText = field.name;
-                li.appendChild(name);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.onclick = fetchDelete(professor.id);
-                deleteButton.textContent = 'Delete';
-                li.appendChild(deleteButton);
-                
-                list.appendChild(li);
-            });
-        });
-    })
+    onMount(async () => {
+        professor = await fetchProfessor(professorId);
+        researchFields = await fetchProfessorResearchFields(professorId);
+    });
 
     function doBack() {
-        goto(VERCEL_URL + '/professors/list');
+        goto('/professors/list');
     }
 
 </script>
 
 <body>
+    {#if professor !== null}
+    <div>Professor: {professor.name}</div>
+    {/if}
     <div class="professor-form-container">
         <form id="professor-form">
             <div class="form-group">
@@ -96,8 +35,16 @@
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
             </div>
             <label for="field_id">Fields</label>
-            <ul id="field-list" />
-            <button type="submit" class="btn btn-primary" onclick="editProfessor()">Submit</button>
+            <ul id="field-list">
+                {#each researchFields as researchField }
+                <li>
+                    <span>{researchField.id}</span>
+                    <option value={researchField.id}>{researchField.name}</option>
+                    <button on:click={() => removeProfessorResearchField(professorId, researchField.id)}>Delete</button>
+                </li>
+                {/each}
+            </ul>
+            <button type="submit" class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>
         </form>
     </div>
     <button id="back-button" on:click={doBack}>Back</button>

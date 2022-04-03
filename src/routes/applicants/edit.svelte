@@ -1,97 +1,62 @@
-<script>
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
+<script lang="ts">
     import { goto } from '$app/navigation';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
+    import { editApplicant, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
+    import { createOptionNoEmpty, getNone } from '../../request/util';
+    import { fetchResearchFields } from '../../request/research-field';
 
-    let applicantId;
+    let applicantId: string = $page.url.searchParams.get('id');
+    let researchFields: Array<ResearchField> = [];
     page.subscribe(currentPage => { applicantId = currentPage.url.searchParams.get('id'); });
 
-    async function fetchResearchFields() {
-        const response = await fetch(HEROKU_URL + '/rest/research-fields',
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
-
-    async function fetchApplicant() {
-        const response = await fetch(HEROKU_URL + '/rest/applicant?id=' + applicantId,
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
-
-    async function editApplicant(e) {
+    async function requestEditApplicant(e: MouseEvent) {
         e.preventDefault();
 
-        const nameCandidate = document.getElementById('name').value;
-        const phoneNumberCandidate = document.getElementById('phone_number').value;
-        const desiredFieldIdCandidate = parseInt(document.getElementById('desired_field_id').value);
-        const emailCandidate = document.getElementById('email').value;
-        const applicantFieldId = await fetchApplicant().then(data => {
-            return data.id;
-        });
+        const nameCandidate = (document.getElementById('name') as HTMLInputElement).value;
+        const phoneNumberCandidate = (document.getElementById('phone_number') as HTMLInputElement).value;
+        const desiredFieldIdCandidate = (document.getElementById('desired_field_id') as HTMLInputElement).value;
+        const emailCandidate = (document.getElementById('email') as HTMLInputElement).value;
 
-        const applicantJSON = JSON.stringify({
-            name: nameCandidate !== '' ? nameCandidate : null,
-            phone_number: phoneNumberCandidate !== '' ? phoneNumberCandidate : null,
-            desired_field_id: desiredFieldIdCandidate !== applicantFieldId ? desiredFieldIdCandidate : null,
-            email: emailCandidate !== '' ? emailCandidate : null,
-        })
+        const editApplicantRequest: EditApplicant = {
+            id: parseInt(applicantId),
+            desired_field_id: createOptionNoEmpty(desiredFieldIdCandidate),
+            name: createOptionNoEmpty(nameCandidate),
+            phone_number: createOptionNoEmpty(phoneNumberCandidate),
+            email: createOptionNoEmpty(emailCandidate),
+            cv_blob_id: getNone(),
+            diploma_blob_id: getNone(),
+            grade_audit_blob_id: getNone(),
+        };
         
-        if (applicantJSON.includes('""')) {
-            return;
-        }
-        
-        await fetch(HEROKU_URL + '/rest/applicant?app_id=' + applicantId, {
-            method: 'PUT',
-            body: applicantJSON,
-        });
+        await editApplicant(applicantId, editApplicantRequest);
     
-        goto(VERCEL_URL + '/applicants/list');
+        goto('/applicants/list');
     }
 
-    async function uploadFile(e) {
+    async function uploadFiles(e: MouseEvent) {
         e.preventDefault();
 
         let formData = new FormData();
         
-        const cvFile = document.getElementById('cv-file');
+        const cvFile = document.getElementById('cv-file') as HTMLInputElement;
         if(cvFile.files.length) {
-            console.log(await cvFile.files[0].arrayBuffer());
-            formData.append('cv_file', cvFile.files[0]);
+            await uploadApplicantCV(cvFile.files[0], applicantId);
         }
 
-        const diplomaFile = document.getElementById('diploma-file');
+        const diplomaFile = document.getElementById('diploma-file') as HTMLInputElement;
         if(diplomaFile.files.length) {
-            formData.append('diploma_file', diplomaFile.files[0]);
+            await uploadApplicantDiploma(diplomaFile.files[0], applicantId);
         }
 
-        const gradeAuditFile = document.getElementById('grade-audit-file');
+        const gradeAuditFile = document.getElementById('grade-audit-file') as HTMLInputElement;
         if(gradeAuditFile.files.length) {
-            formData.append('grade_audit_file', gradeAuditFile.files[0]);
+            await uploadApplicantGradeAudit(gradeAuditFile.files[0], applicantId);
         }
-
-        await fetch(HEROKU_URL + '/rest/applicant/files?applicant_id=' + applicantId,
-            {
-                body: formData,
-                method: "post",
-            }
-        );
     }
 
-    onMount(() => {
-        fetchResearchFields().then(data => {
-            const select = document.getElementById('desired_field_id');
-            data.forEach(field => {
-                const option = document.createElement('option');
-                option.value = field.id;
-                option.text = field.name;
-                select.appendChild(option);
-            });
-        });
+    onMount(async () => {
+        researchFields = await fetchResearchFields();
     });
 </script>
 
@@ -112,15 +77,19 @@
             </div>
             <div class="form-group">
                 <label for="desired_field_id">Desired Field</label>
-                <select class="form-control" id="desired_field_id" />
+                <select class="form-control" id="desired_field_id">
+                    {#each researchFields as researchField}
+                    <option value={researchField.id}>{researchField.name}</option>
+                    {/each}
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary" on:click={editApplicant}>Submit</button>
+            <button type="submit" class="btn btn-primary" on:click={requestEditApplicant}>Submit</button>
         </form>
         <form id="file-form">
             <input type="file" name="cv-file" id="cv-file" />
             <input type="file" name="diploma-file" id="diploma-file" />
             <input type="file" name="grade-audit-file" id="grade-audit-file" />
-            <input type="button" value="Submit" on:click={uploadFile}/>
+            <input type="button" value="Submit" on:click={uploadFiles}/>
         </form>
     </div>
 
