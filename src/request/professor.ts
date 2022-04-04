@@ -29,6 +29,14 @@ export async function removeProfessorResearchField(professorId: string, research
         method: 'DELETE',
     });
 }
+
+export async function addResearchedFieldToProfessor(professorId: string, researchFieldId: number) {
+    const response = await fetch(HEROKU_URL + '/rest/professor/research-field?prof_id=' + professorId + '&field_id=' + researchFieldId,
+    {
+        method: 'POST',
+    });
+}
+
 export async function deleteProfessor(id: string): Promise<void> {
     const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
     {
