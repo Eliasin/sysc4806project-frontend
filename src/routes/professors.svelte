@@ -3,6 +3,8 @@
 </svelte:head>
 
 <script>
+    import { goto } from "$app/navigation";
+
     function selectCreate() {
         window.location.pathname = "/professors/new/";
     }
@@ -12,6 +14,7 @@
 </script>
 
 <body>
+    <button on:click={() => goto('/')}>Back</button>
     <div class="selection">
         <div id="selection-a">
             <button class="select" on:click={selectCreate}>

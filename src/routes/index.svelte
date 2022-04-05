@@ -1,33 +1,19 @@
-<svelte:head>
-    <title>SYSC4806 Project - Index</title>
-</svelte:head>
+<script lang="ts">
+    import { loginState } from "../stores";
+    import AdminPanel from "./_admin-panel.svelte";
+    import LoginScreen from "./_login-screen.svelte";
+    import ApplicantEdit from "./applicants/edit.svelte";
+    import ProfessorEdit from "./professors/edit.svelte";
 
-<script>
-    function selectApplicants() {
-        window.location.pathname = "/applicants/";
-    }
-    function selectProfessors() {
-        window.location.pathname = "/professors/";
-    }
+    let loginStateValue = $loginState;
 </script>
 
-<body>
-    <div class="selection">
-        <div id="selection-a">
-            <button class="select" on:click={selectApplicants}>
-                Manage Applicants
-            </button>
-        </div>
-        <div id="selection-b">
-            <h2 class="selection-header">
-            </h2>
-            <button class="select" on:click={selectProfessors}>
-                Manage Professors
-            </button>
-        </div>
-    </div>
-
-    <style lang="scss">
-        @import '../styles/global.scss';
-    </style>
-</body>
+{#if loginStateValue.kind === 'admin'}
+<AdminPanel></AdminPanel>
+{:else if loginStateValue.kind === 'professor'}
+<ProfessorEdit></ProfessorEdit>
+{:else if loginStateValue.kind === 'applicant'}
+<ApplicantEdit></ApplicantEdit>
+{:else}
+<LoginScreen></LoginScreen>
+{/if}

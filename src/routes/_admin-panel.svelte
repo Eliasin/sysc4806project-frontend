@@ -1,7 +1,3 @@
-<svelte:head>
-    <title>SYSC4806 Project - Applicants</title>
-</svelte:head>
-
 <script>
     import { goto } from "$app/navigation";
 

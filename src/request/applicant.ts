@@ -56,3 +56,15 @@ export async function uploadApplicantGradeAudit(blob: Blob, applicantId: string)
     }
     );
 }
+
+export function getApplicantCVUrl(applicantId: string): string {
+    return `${HEROKU_URL}/rest/applicant/files/cv?applicant_id=${applicantId}`;
+}
+
+export function getApplicantDiplomaUrl(applicantId: string): string {
+    return `${HEROKU_URL}/rest/applicant/files/diploma?applicant_id=${applicantId}`;
+}
+
+export function getApplicantGradeAuditUrl(applicantId: string): string {
+    return `${HEROKU_URL}/rest/applicant/files/grade-audit?applicant_id=${applicantId}`;
+}
