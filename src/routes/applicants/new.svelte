@@ -27,6 +27,7 @@
 </script>
 
 <body>
+    <button on:click={() => goto('/applicants')}>Back</button>
     <div class="applicant-form-container">
         <form id="applicant-form">
             <div class="form-group">

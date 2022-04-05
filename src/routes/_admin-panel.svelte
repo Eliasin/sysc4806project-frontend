@@ -1,27 +1,26 @@
 <script>
     import { goto } from "$app/navigation";
-
-    function selectCreate() {
-        window.location.pathname = "/applicants/new/";
-    }
-    function selectView() {
-        window.location.pathname = "/applicants/list/";
-    }
 </script>
 
 <body>
-    <button on:click={() => goto('/')}>Back</button>
     <div class="selection">
         <div id="selection-a">
-            <button class="select" on:click={selectCreate}>
-                Create Applicant
+            <button class="select" on:click={() => goto('/applicants')}>
+                Manage Applicants
             </button>
         </div>
         <div id="selection-b">
             <h2 class="selection-header">
             </h2>
-            <button class="select" on:click={selectView}>
-                List Applicants
+            <button class="select" on:click={() => goto('/professors')}>
+                Manage Professors
+            </button>
+        </div>
+        <div id="selection-c">
+            <h2 class="selection-header">
+            </h2>
+            <button class="select" on:click={() => goto('/research-fields/list')}>
+                Manage Research Fields
             </button>
         </div>
     </div>

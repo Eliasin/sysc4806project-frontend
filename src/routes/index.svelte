@@ -15,5 +15,5 @@
 {:else if loginStateValue.kind === 'applicant'}
 <ApplicantEdit></ApplicantEdit>
 {:else}
-<LoginScreen></LoginScreen>
+<AdminPanel></AdminPanel>
 {/if}
