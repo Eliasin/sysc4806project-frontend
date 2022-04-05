@@ -1,50 +1,33 @@
-<script>
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
+<script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import { createApplicant } from '../../request/applicant';
+    import { fetchResearchFields } from '../../request/research-field';
 
-    async function createApplicant() {
-        const applicantJSON = JSON.stringify({
-            name: document.getElementById('name').value,
-            phone_number: document.getElementById('phone_number').value,
-            desired_field_id: parseInt(document.getElementById('desired_field_id').value),
-            email: document.getElementById('email').value,
-        })
-        
-        if (applicantJSON.includes('""')) {
+    let researchFields: Array<ResearchField> = [];
+
+    async function requestCreateApplicant() {
+        let name = (document.getElementById('name') as HTMLInputElement).value;
+        let phone_number = (document.getElementById('phone_number') as HTMLInputElement).value; 
+        let desired_field_id = parseInt((document.getElementById('desired_field_id') as HTMLInputElement).value);
+        let email = (document.getElementById('email') as HTMLInputElement).value;
+
+        if (name === '' || phone_number === '' || email === '') {
             return;
         }
-        
-        await fetch(HEROKU_URL + '/rest/applicant', {
-            method: 'POST',
-            body: applicantJSON,
-        });
+
+        await createApplicant({ name, phone_number, desired_field_id, email });
     
-        goto(VERCEL_URL + '/applicants/list');
+        goto('/applicants/list');
     }
 
-    async function fetchResearchFields() {
-        const response = await fetch(HEROKU_URL + '/rest/research-fields',
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
-
-    onMount(() => {
-        fetchResearchFields().then(data => {
-            const select = document.getElementById('desired_field_id');
-            data.forEach(field => {
-                const option = document.createElement('option');
-                option.value = field.id;
-                option.text = field.name;
-                select.appendChild(option);
-            });
-        });
-    })
+    onMount(async () => {
+        researchFields = await fetchResearchFields();
+    });
 </script>
 
 <body>
+    <button on:click={() => goto('/applicants')}>Back</button>
     <div class="applicant-form-container">
         <form id="applicant-form">
             <div class="form-group">
@@ -61,9 +44,13 @@
             </div>
             <div class="form-group">
                 <label for="desired_field_id">Desired Field</label>
-                <select class="form-control" id="desired_field_id" />
+                <select class="form-control" id="desired_field_id">
+                {#each researchFields as researchField}
+                <option value={researchField.id}>{researchField.name}</option>
+                {/each}
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary" on:click={createApplicant} >Submit</button>
+            <button type="submit" class="btn btn-primary" on:click={requestCreateApplicant} >Submit</button>
         </form>
     </div>
 

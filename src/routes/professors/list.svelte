@@ -2,75 +2,24 @@
     <title>SYSC4806 Project - List Professors</title>
 </svelte:head>
 
-<script>
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
-    import { browser } from '$app/env';
+<script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import { deleteProfessor, fetchProfessors } from '../../request/professor';
 
-    async function fetchProfessors() {
-        const response = await fetch(HEROKU_URL + '/rest/professors',
-        {
-            method: 'GET',
-        });
-        return response.json();
-    }
+    let professors: Array<Professor> = [];
 
-    async function fetchDelete(id) {
-        console.log('button pressed, id:' + id);
-        const response = await fetch(HEROKU_URL + '/rest/professor?id=' + id,
-        {
-            method: 'DELETE',
-        });
-        window.location.refresh();
-        return response.json();
-    }
-
-    onMount(() => {
-        fetchProfessors().then(data => {
-            const list = document.getElementById('professor-list');
-
-            data.forEach(professor => {
-                const li = document.createElement('li');
-                li.class = 'professor-list-item';
-                
-                const id = document.createElement('span');
-                id.innerText = professor.id;
-                li.appendChild(id);
-                
-                const name = document.createElement('span');
-                name.innerText = professor.name;
-                li.appendChild(name);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.onclick = () => fetchDelete(professor.id);
-                deleteButton.textContent = 'Delete';
-                li.appendChild(deleteButton);
-
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
-                editButton.onclick = () => goto(VERCEL_URL + '/professors/edit?id=' + professor.id);
-                li.appendChild(editButton);
-                
-                list.appendChild(li);
-            });
-        });
+    onMount(async () => {
+        professors = await fetchProfessors();
     })
 
-    /*
-    async function fetchEdit() {
-        async () => {
-            const response = await fetch(APP_URL + '/professors/edit?id=',
-            {
-                method: 'POST',
-            });
-            return response.json();
-        }
-    }
-    */
-
     function doBack() {
-        goto(VERCEL_URL + '/professors/');
+        goto('/professors/');
+    }
+
+    async function requestDeleteProfessor(id: string) {
+        await deleteProfessor(id);
+        professors = await fetchProfessors();
     }
 
 </script>
@@ -78,7 +27,16 @@
 <body>
     <div class="professor-list-container">
         <button id="back-button" on:click={doBack}>Back</button>
-        <ul id="professor-list" />
+        <ul id="professor-list">
+        {#each professors as professor}
+            <li class="professor-list-item">
+                <span>{professor.id}</span>
+                <span>{professor.name}</span>
+                <button on:click={() => requestDeleteProfessor(professor.id.toString())}>Delete</button>
+                <button on:click={() => goto('/professors/edit?id=' + professor.id)}>Edit</button>
+            </li>
+        {/each}
+        </ul>
     </div>
 
     <style lang="scss">

@@ -1,26 +1,17 @@
-<script>
-    import { HEROKU_URL, VERCEL_URL } from '../../globals';
+<script lang="ts">
     import { goto } from '$app/navigation';
+    import { createProfessor } from '../../request/professor';
 
-    async function createProfessor() {
-        const professorJSON = JSON.stringify({
-            name: document.getElementById('name').value,
-        })
-        
-        if (professorJSON.includes('""')) {
-            return;
-        }
-        
-        await fetch(HEROKU_URL + '/rest/professor', {
-            method: 'POST',
-            body: professorJSON,
-        });
-    
-        goto(VERCEL_URL + '/professors/list');
+    async function requestCreateProfessor() {
+        let name = (document.getElementById('name') as HTMLInputElement).value;
+        await createProfessor(name);
+
+        goto('/professors/');
     }
 
+
     function doBack() {
-        goto(VERCEL_URL + '/professors/');
+        goto('/professors/');
     }
 </script>
 
@@ -32,7 +23,7 @@
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
             </div>
-            <button type="submit" class="btn btn-primary" on:click={createProfessor}>Submit</button>
+            <button type="submit" class="btn btn-primary" on:click={requestCreateProfessor}>Submit</button>
         </form>
     </div>
 
