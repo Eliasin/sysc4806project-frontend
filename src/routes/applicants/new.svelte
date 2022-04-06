@@ -55,7 +55,7 @@
                 {/each}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary" on:click={requestCreateApplicant} >Submit</button>
+            <button type="submit" class="btn btn-primary" on:click|preventDefault={requestCreateApplicant} >Submit</button>
         </form>
     </div>
 
