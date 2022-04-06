@@ -6,6 +6,7 @@
     let loginStateValue = $loginState;
     let professorId: string | null = null;
 
+    professorId = $page.url.searchParams.get('id');
     $: if (loginStateValue.kind === 'admin') {
         professorId = $page.url.searchParams.get('id');
     } else if (loginStateValue.kind === 'applicant') {

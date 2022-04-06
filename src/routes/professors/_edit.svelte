@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication } from '../../request/professor';
     import { fetchResearchFields } from '../../request/research-field';
-    import { getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl } from '../../request/applicant';
+    import ApplicantFiles from './_applicant-files.svelte';
 
     export let professorId;
 
@@ -40,7 +40,19 @@
     }
 
 </script>
-
+<style>
+    li {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+    }
+</style>
 <body>
     {#if professor !== null}
     <div>Professor: {professor.name}</div>
@@ -103,23 +115,8 @@
                     }}>Reject</button>
                 </li>
                 <div class="content">
-                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
-                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
-                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                    <ApplicantFiles applicantId={applicant.id}/>
                 </div>
-                <style>
-                    li {
-                        background-color: #eee;
-                        color: #444;
-                        cursor: pointer;
-                        padding: 18px;
-                        width: 100%;
-                        border: none;
-                        text-align: left;
-                        outline: none;
-                        font-size: 15px;
-                    }
-                </style>
                 {/each}
             </ul>
             <label for="approved-application">Approved Applications</label>
@@ -127,23 +124,8 @@
                 {#each approvedApplicants as applicant}
                 <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
                 <div class="content">
-                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
-                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
-                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                    <ApplicantFiles applicantId={applicant.id}/>
                 </div>
-                <style>
-                    li {
-                        background-color: #eee;
-                        color: #444;
-                        cursor: pointer;
-                        padding: 18px;
-                        width: 100%;
-                        border: none;
-                        text-align: left;
-                        outline: none;
-                        font-size: 15px;
-                    }
-                </style>
                 {/each}
             </ul>
             <label for="rejected-application">Rejected Applications</label>
@@ -151,23 +133,8 @@
                 {#each rejectedApplicants as applicant}
                 <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
                 <div class="content">
-                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
-                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
-                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                    <ApplicantFiles applicantId={applicant.id}/>
                 </div>
-                <style>
-                    li {
-                        background-color: #eee;
-                        color: #444;
-                        cursor: pointer;
-                        padding: 18px;
-                        width: 100%;
-                        border: none;
-                        text-align: left;
-                        outline: none;
-                        font-size: 15px;
-                    }
-                </style>
                 {/each}
             </ul>
             <button class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>
@@ -175,7 +142,3 @@
     </div>
     <button id="back-button" on:click={doBack}>Back</button>
 </body>
-
-<style>
-    
-</style>
