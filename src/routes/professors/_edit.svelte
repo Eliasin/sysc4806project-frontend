@@ -153,7 +153,7 @@ import Applicants from '../applicants.svelte';
         </div>
     </div>
 
-    {#if noBack}
+    {#if !noBack}
     <button id="back-button" on:click={doBack}>Back</button>
     {/if}
     
