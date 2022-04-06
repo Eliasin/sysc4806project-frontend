@@ -192,7 +192,7 @@
     </style>
 
     {#if $loginState.kind === 'admin'}
-    <div class="labeled-list">
+    <div id="account-creation" class="labeled-list">
         <span>Create Login For User</span>
         <form id="account-creation-form">
             <label for="username">Username:</label>
