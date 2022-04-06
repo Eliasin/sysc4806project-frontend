@@ -80,4 +80,11 @@
             align-items: center;
         }
     }
+
+    & > #account-creation-form {
+        display: grid;
+        margin: auto;
+        grid-row-gap: 0.2em;
+        grid-column: 1 / 3;
+    }
 }

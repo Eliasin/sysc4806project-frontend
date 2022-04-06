@@ -192,14 +192,16 @@
     </style>
 
     {#if $loginState.kind === 'admin'}
-    <span>Create Login For User</span>
-    <form>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password">
+    <div class="labeled-list">
+        <span>Create Login For User</span>
+        <form id="account-creation-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
 
-        <button on:click|preventDefault={requestCreateApplicantLogin}>Create Login</button>
-    </form>
+            <button on:click|preventDefault={requestCreateApplicantLogin}>Create Login</button>
+        </form>
+    </div>
     {/if}
 </body>
