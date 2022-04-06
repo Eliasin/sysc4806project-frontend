@@ -148,9 +148,9 @@
             <input type="button" value="Submit" on:click|preventDefault={uploadFiles}/>
         </form>
         <div id="file-downloads">
-            <a class="applicant-cv" href={applicantCVUrl} download>
-            <a class="applicant-diploma" href={applicantDiplomaUrl} download>
-            <a class="applicant-grade-audit" href={applicantGradeAuditUrl} download>
+            <img alt="Empty Applicant CV" class="applicant-cv" src={applicantCVUrl}>
+            <img alt="Empty Applicant Diploma" class="applicant-diploma" src={applicantDiplomaUrl}>
+            <img alt="Empty Applicant Grade Audit" class="applicant-grade-audit" src={applicantGradeAuditUrl}>
         </div>
         <div class="labeled-list">
             <label for="apply-to-professors">Available Professors for Application</label>
