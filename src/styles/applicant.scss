@@ -31,6 +31,10 @@
 }
 
 #applicant-form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr 2fr 3fr 2fr;
+    
     #applicant-form {
         grid-column: 1 / 3;
     }
