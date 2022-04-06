@@ -40,6 +40,7 @@
                 <span class='list-title'>Name</span>
                 <span class='list-title'>Action</span>
                 <span class='list-title'>Action</span>
+            </li>
             {/if}
             <li class="professor-list-item">
                 <span>{professor.id}</span>
