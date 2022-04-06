@@ -1,0 +1,31 @@
+.spaced-column {
+    display: flex;
+    flex-flow: column;  
+    justify-content: space-between;
+}
+
+#research-field-list-container {
+    display: flex;
+    justify-content: center;
+    height: 90%;
+
+    #research-field-list {
+        list-style-type: none;
+        padding: 0;
+        width: max-content;
+        overflow: scroll;
+        max-height: 80%;
+        margin: auto;
+    
+        & > .research-field-list-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr 1.2fr;
+    
+            & > * {
+                display: flex;
+                justify-content: center;
+                align-content: center;
+            }
+        }
+    }
+}

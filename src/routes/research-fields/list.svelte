@@ -30,22 +30,29 @@
     });
 </script>
 
-<body>
-    <button on:click={() => goto('/')}>Back</button>
+<body class="spaced-column">
+    <button id="back-button" on:click={() => goto('/')}>Back</button>
     {#if $loginState.kind !== 'not-logged-in'}
+    <div id="research-field-list-container">
         <form>
             <label for="name">Name</label>
             <input id="name" type="text">
             <button on:click={requestCreateResearchField}>Create</button>
         </form>
-        <ul>
-        {#each researchFields as researchField}
-        <li>
-            <span>{researchField.id}</span>
-            <span>{researchField.name}</span>
-            <button on:click={() => requestDeleteResearchField(researchField.id.toString())}>Delete</button>
-        </li>
-        {/each}
+        <ul id="research-field-list">
+            {#each researchFields as researchField}
+            <li id="research-field-item">
+                <span>{researchField.id}</span>
+                <span>{researchField.name}</span>
+                <button on:click={() => requestDeleteResearchField(researchField.id.toString())}>Delete</button>
+            </li>
+            {/each}
         </ul>
+    </div>
     {/if}
+
+    <style lang="scss">
+        @import '../../styles/global.scss';
+        @import '../../styles/reserach-fields.scss';
+    </style>
 </body>
