@@ -168,6 +168,6 @@ import Applicants from '../applicants.svelte';
 
             <button on:click|preventDefault={requestCreateProfessorLogin}>Create Login</button>
         </form>
-        {/if}
     </div>
+    {/if}
 </body>
