@@ -53,6 +53,6 @@
 
     <style lang="scss">
         @import '../../styles/global.scss';
-        @import '../../styles/reserach-fields.scss';
+        @import '../../styles/research-fields.scss';
     </style>
 </body>
