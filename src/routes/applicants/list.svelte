@@ -27,7 +27,7 @@
     });
 </script>
 
-<body>
+<body class="spaced-column">
     <button id="back-button" on:click={doBack}>Back</button>
     <div id="applicant-list-container">
         <ul id="applicant-list">
