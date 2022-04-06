@@ -30,8 +30,8 @@ export async function deleteResearchField(sessionToken: string, id: string): Pro
     });
 }
 
-export async function getResearchField(sessionToken: string, applicantId: string): Promise<ResearchField | null> {
-    const response = await fetch(HEROKU_URL + '/rest/research-field?id=' + applicantId,
+export async function getResearchField(sessionToken: string, researchFieldId: string): Promise<ResearchField | null> {
+    const response = await fetch(HEROKU_URL + '/rest/research-field?id=' + researchFieldId,
     {
         method: 'GET',
         headers: {
