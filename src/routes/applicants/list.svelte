@@ -28,8 +28,8 @@
 </script>
 
 <body>
+    <button id="back-button" on:click={doBack}>Back</button>
     <div class="applicant-list-container">
-        <button id="back-button" on:click={doBack}>Back</button>
         <ul id="applicant-list">
             {#each applicants as applicant}
             <li class='applicant-list-item'>

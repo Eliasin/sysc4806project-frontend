@@ -1,0 +1,21 @@
+#applicant-list-container {
+    
+    #applicant-list {
+        list-style-type: none;
+        padding: 0;
+        width: max-content;
+        overflow: scroll;
+        max-height: 80%;
+    
+        & > .applicant-list-item {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr) 1.2fr;
+    
+            & > * {
+                display: flex;
+                justify-content: center;
+                align-content: center;
+            }
+        }
+    }
+}
