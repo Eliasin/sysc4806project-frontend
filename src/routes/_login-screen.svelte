@@ -39,18 +39,24 @@
     });
 </script>
 
-{#if shouldPromptFirstAdminCreation}
-<span>Create First Admin Account</span>
-{/if}
-<form>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password">
-
+<body>
     {#if shouldPromptFirstAdminCreation}
-    <button on:click|preventDefault={createFirstAdminLogin}>Login</button>
-    {:else}
-    <button on:click|preventDefault={requestLogin}>Login</button>
+    <span>Create First Admin Account</span>
     {/if}
-</form>
+    <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+    
+        {#if shouldPromptFirstAdminCreation}
+        <button on:click|preventDefault={createFirstAdminLogin}>Login</button>
+        {:else}
+        <button on:click|preventDefault={requestLogin}>Login</button>
+        {/if}
+    </form>
+
+    <style lang="scss">
+        @import '../styles/global.scss';
+    </style>
+</body>
