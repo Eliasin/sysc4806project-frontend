@@ -31,7 +31,16 @@
     <button id="back-button" on:click={doBack}>Back</button>
     <div id="applicant-list-container">
         <ul id="applicant-list">
-            {#each applicants as applicant}
+            {#each applicants as applicant, i}
+            {#if i == 0}
+            <li class="applicant-list-item">
+                <span class='list-title'>ID</span>
+                <span class='list-title'>Name</span>
+                <span class='list-title'>Email</span>
+                <span class='list-title'>Research Field</span>
+                <span class='list-title'>Status</span>
+                <span class='list-title'>Action</span>
+            {/if}
             <li class='applicant-list-item'>
                 <span>{applicant.id}</span>
                 <span>{applicant.desired_field_id}</span>

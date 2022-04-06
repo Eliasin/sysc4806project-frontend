@@ -1,11 +1,21 @@
+.spaced-column {
+    display: flex;
+    flex-flow: column;  
+    justify-content: space-between;
+}
+
 #applicant-list-container {
-    
+    display: flex;
+    justify-content: center;
+    height: 90%;
+
     #applicant-list {
         list-style-type: none;
         padding: 0;
         width: max-content;
         overflow: scroll;
         max-height: 80%;
+        margin: auto;
     
         & > .applicant-list-item {
             display: grid;
