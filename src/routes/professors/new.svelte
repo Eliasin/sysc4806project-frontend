@@ -1,10 +1,16 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { loginState } from 'src/stores';
     import { createProfessor } from '../../request/professor';
+
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
 
     async function requestCreateProfessor() {
         let name = (document.getElementById('name') as HTMLInputElement).value;
-        await createProfessor(name);
+        await createProfessor(sessionToken, name);
 
         goto('/professors/');
     }

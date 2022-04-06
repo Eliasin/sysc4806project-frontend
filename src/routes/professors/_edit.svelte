@@ -1,7 +1,8 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { loginState } from '../../stores';
     import { onMount } from 'svelte';
-    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication } from '../../request/professor';
+    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication, createProfessorLogin } from '../../request/professor';
     import { fetchResearchFields } from '../../request/research-field';
     import ApplicantFiles from './_applicant-files.svelte';
 
@@ -13,6 +14,10 @@
     let pendingApplicants: Array<Applicant> = [];
     let approvedApplicants: Array<Applicant> = [];
     let rejectedApplicants: Array<Applicant> = [];
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
 
     $: professorResearchFieldIds = professorResearchFields.map(field => field.id);
     $: fieldsNotResearched = researchFields.filter(field => !professorResearchFieldIds.includes(field.id));
@@ -21,18 +26,25 @@
         e.preventDefault();
 
         let name = (document.getElementById('name') as HTMLInputElement).value;
-        await editProfessorName(professorId, name);
+        await editProfessorName(sessionToken, professorId, name);
 
-        professor = await fetchProfessor(professorId);
+        professor = await fetchProfessor(sessionToken, professorId);
+    }
+
+    async function requestCreateProfessorLogin() {
+        let username = (document.getElementById('username') as HTMLInputElement).value;
+        let password = (document.getElementById('password') as HTMLInputElement).value;
+
+        await createProfessorLogin(sessionToken, professorId, username, password);
     }
 
     onMount(async () => {
-        professor = await fetchProfessor(professorId);
-        professorResearchFields = await fetchProfessorResearchFields(professorId);
-        researchFields = await fetchResearchFields();
-        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
-        approvedApplicants = await fetchApplicantsForProfessor(professorId, 'ACCPETED');
-        rejectedApplicants = await fetchApplicantsForProfessor(professorId, 'DENIED');
+        professor = await fetchProfessor(sessionToken, professorId);
+        professorResearchFields = await fetchProfessorResearchFields(sessionToken, professorId);
+        researchFields = await fetchResearchFields(sessionToken);
+        pendingApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'PENDING');
+        approvedApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'ACCEPTED');
+        rejectedApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'DENIED');
     });
 
     function doBack() {
@@ -71,9 +83,9 @@
                     <option value={researchField.id}>{researchField.name}</option>
                     <button on:click={async (e) => {
                         e.preventDefault();
-                        await removeProfessorResearchField(professorId, researchField.id)
+                        await removeProfessorResearchField(sessionToken, professorId, researchField.id)
 
-                        professorResearchFields = await fetchProfessorResearchFields(professorId);
+                        professorResearchFields = await fetchProfessorResearchFields(sessionToken, professorId);
                     }}>Delete</button>
                 </li>
                 {/each}
@@ -86,9 +98,9 @@
                     <option value={researchField.id}>{researchField.name}</option>
                     <button on:click={async (e) => {
                         e.preventDefault();
-                        await addResearchedFieldToProfessor(professorId, researchField.id);
+                        await addResearchedFieldToProfessor(sessionToken, professorId, researchField.id);
 
-                        professorResearchFields = await fetchProfessorResearchFields(professorId);
+                        professorResearchFields = await fetchProfessorResearchFields(sessionToken, professorId);
                     }}>Add</button>
                 </li>
                 {/each}
@@ -96,44 +108,44 @@
             <label for="pending-application">Pending Applications</label>
             <ul id="pending-applications">
                 {#each pendingApplicants as applicant}
-                <li button type="button" class="collapsible">
+                <li type="button" class="collapsible">
                     <div>{applicant.name}</div>
                     <div>{applicant.email}</div>
                     <button on:click={async (e) => {
                         e.preventDefault();
-                        await acceptApplication(professorId, applicant.id);
+                        await acceptApplication(sessionToken, professorId, applicant.id);
 
-                        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
-                        approvedApplicants = await fetchApplicantsForProfessor(professorId, 'ACCEPTED');
+                        pendingApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'PENDING');
+                        approvedApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'ACCEPTED');
                     }}>Approve</button>
                     <button on:click={async (e) => {
                         e.preventDefault();
-                        await denyApplication(professorId, applicant.id);
+                        await denyApplication(sessionToken, professorId, applicant.id);
 
-                        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
-                        rejectedApplicants = await fetchApplicantsForProfessor(professorId, 'DENIED');
+                        pendingApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'PENDING');
+                        rejectedApplicants = await fetchApplicantsForProfessor(sessionToken, professorId, 'DENIED');
                     }}>Reject</button>
                 </li>
                 <div class="content">
-                    <ApplicantFiles applicantId={applicant.id}/>
+                    <ApplicantFiles applicantId={applicant.id.toString()}/>
                 </div>
                 {/each}
             </ul>
             <label for="approved-application">Approved Applications</label>
             <ul id="approved-applications">
                 {#each approvedApplicants as applicant}
-                <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
+                <li type="button" class="collapsible">{applicant.name + ' ' + applicant.email}</li>
                 <div class="content">
-                    <ApplicantFiles applicantId={applicant.id}/>
+                    <ApplicantFiles applicantId={applicant.id.toString()}/>
                 </div>
                 {/each}
             </ul>
             <label for="rejected-application">Rejected Applications</label>
             <ul id="rejected-applications">
                 {#each rejectedApplicants as applicant}
-                <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
+                <li type="button" class="collapsible">{applicant.name + ' ' + applicant.email}</li>
                 <div class="content">
-                    <ApplicantFiles applicantId={applicant.id}/>
+                    <ApplicantFiles applicantId={applicant.id.toString()}/>
                 </div>
                 {/each}
             </ul>
@@ -141,4 +153,15 @@
         </form>
     </div>
     <button id="back-button" on:click={doBack}>Back</button>
+    {#if $loginState.kind === 'admin'}
+    <span>Create Login For Professor</span>
+    <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+
+        <button on:click|preventDefault={requestCreateProfessorLogin}>Create Login</button>
+    </form>
+    {/if}
 </body>

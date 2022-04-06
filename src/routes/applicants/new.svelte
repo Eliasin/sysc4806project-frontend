@@ -1,10 +1,15 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { loginState } from '../../stores';
     import { onMount } from 'svelte';
     import { createApplicant } from '../../request/applicant';
     import { fetchResearchFields } from '../../request/research-field';
 
     let researchFields: Array<ResearchField> = [];
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
 
     async function requestCreateApplicant() {
         let name = (document.getElementById('name') as HTMLInputElement).value;
@@ -16,13 +21,13 @@
             return;
         }
 
-        await createApplicant({ name, phone_number, desired_field_id, email });
+        await createApplicant(sessionToken, { name, phone_number, desired_field_id, email });
     
         goto('/applicants/list');
     }
 
     onMount(async () => {
-        researchFields = await fetchResearchFields();
+        researchFields = await fetchResearchFields(sessionToken);
     });
 </script>
 

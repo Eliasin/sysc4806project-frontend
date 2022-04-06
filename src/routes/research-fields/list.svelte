@@ -4,11 +4,15 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
 
-    let loginStateValue: LoginState = $loginState;
     let researchFields: Array<ResearchField> = [];
 
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
+
     async function requestDeleteResearchField(id: string) {
-        await deleteResearchField(id);
+        await deleteResearchField(sessionToken, id);
     }
 
     async function requestCreateResearchField(e: MouseEvent) {
@@ -16,19 +20,19 @@
 
         let name = (document.getElementById('name') as HTMLInputElement).value;
 
-        await createResearchField(name);
+        await createResearchField(sessionToken, name);
 
-        researchFields = await fetchResearchFields();
+        researchFields = await fetchResearchFields(sessionToken);
     }
 
     onMount(async () => {
-        researchFields = await fetchResearchFields();
+        researchFields = await fetchResearchFields(sessionToken);
     });
 </script>
 
 <body>
     <button on:click={() => goto('/')}>Back</button>
-    {#if loginStateValue.kind !== 'not-logged-in'}
+    {#if $loginState.kind !== 'not-logged-in'}
         <form>
             <label for="name">Name</label>
             <input id="name" type="text">

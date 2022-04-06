@@ -4,6 +4,7 @@
 
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { loginState } from '../../stores';
     import { onMount } from 'svelte';
     import { fetchApplicants } from '../../request/applicant';
     import { fetchResearchFields } from '../../request/research-field';
@@ -11,13 +12,18 @@
     let applicants: Array<Applicant> = [];
     let researchFields: Array<ResearchField> = []; 
 
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
+
     function doBack() {
         goto('/applicants/');
     }
 
     onMount(async () => {
-        applicants = await fetchApplicants();
-        researchFields = await fetchResearchFields();
+        applicants = await fetchApplicants(sessionToken);
+        researchFields = await fetchResearchFields(sessionToken);
     });
 </script>
 

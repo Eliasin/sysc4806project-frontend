@@ -1,16 +1,24 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import { editApplicant, getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
-    import { applyToProfessor, removeApplication, fetchProfessorsAppliedTo, getResearchField } from '../../request/applicant';
+    import { createApplicantLogin, editApplicant, getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
+    import { applyToProfessor, removeApplication, fetchProfessorsAppliedTo } from '../../request/applicant';
     import { fetchProfessorResearchFields, fetchProfessors } from '../../request/professor';
     import { createOptionNoEmpty, getNone } from '../../request/util';
-    import { fetchResearchFields } from '../../request/research-field';
+    import { fetchResearchFields, getResearchField } from '../../request/research-field';
+    import { loginState } from '../../stores';
 
     export let applicantId: string;
     let researchFields: Array<ResearchField> = [];
     let professors: Array<Professor> = [];
     let professorsAppliedTo: Array<Professor> = [];
+    
+    $: professorsNotAppliedTo = professors.filter(prof => !professorsAppliedTo.map(prof => prof.id).includes(prof.id));
+
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
 
     $: applicantCVUrl = getApplicantCVUrl(applicantId); 
     $: applicantDiplomaUrl = getApplicantDiplomaUrl(applicantId);
@@ -18,14 +26,18 @@
     
     let applicantResearchFieldId: number | null = null;
 
-    $: getResearchField(applicantId).then(researchField => applicantResearchFieldId = researchField.id);
+    $: getResearchField(sessionToken, applicantId).then(researchField => {
+        if (researchField !== null) {
+            applicantResearchFieldId = researchField.id
+        }
+    });
     let validProfessors: Array<Professor> = [];
 
     $: getValidProfessors(professors).then(validProfs => validProfessors = validProfs);
 
     async function getValidProfessors(professors: Array<Professor>): Promise<Array<Professor>> {
-        return professors.filter(async (professor: Professor) => {
-            let researchFields = await fetchProfessorResearchFields(professor.id);
+        return professorsNotAppliedTo.filter(async (professor: Professor) => {
+            let researchFields = await fetchProfessorResearchFields(sessionToken, professor.id.toString());
             researchFields.forEach(async researchField => {
                 if (researchField.id === applicantResearchFieldId) {
                     return professor;
@@ -34,9 +46,7 @@
         });
     }
 
-    async function requestEditApplicant(e: MouseEvent) {
-        e.preventDefault();
-
+    async function requestEditApplicant() {
         const nameCandidate = (document.getElementById('name') as HTMLInputElement).value;
         const phoneNumberCandidate = (document.getElementById('phone_number') as HTMLInputElement).value;
         const desiredFieldIdCandidate = (document.getElementById('desired_field_id') as HTMLInputElement).value;
@@ -53,27 +63,32 @@
             grade_audit_blob_id: getNone(),
         };
         
-        await editApplicant(applicantId, editApplicantRequest);
+        await editApplicant(sessionToken, applicantId, editApplicantRequest);
     
         goto('/applicants/list');
     }
 
-    async function uploadFiles(e: MouseEvent) {
-        e.preventDefault();
- 
+    async function requestCreateApplicantLogin() {
+        let username = (document.getElementById('username') as HTMLInputElement).value;
+        let password = (document.getElementById('password') as HTMLInputElement).value;
+
+        await createApplicantLogin(sessionToken, applicantId, username, password);
+    }
+
+    async function uploadFiles() { 
         const cvFile = document.getElementById('cv-file') as HTMLInputElement;
         if(cvFile.files.length) {
-            await uploadApplicantCV(cvFile.files[0], applicantId);
+            await uploadApplicantCV(sessionToken, cvFile.files[0], applicantId);
         }
 
         const diplomaFile = document.getElementById('diploma-file') as HTMLInputElement;
         if(diplomaFile.files.length) {
-            await uploadApplicantDiploma(diplomaFile.files[0], applicantId);
+            await uploadApplicantDiploma(sessionToken, diplomaFile.files[0], applicantId);
         }
 
         const gradeAuditFile = document.getElementById('grade-audit-file') as HTMLInputElement;
         if(gradeAuditFile.files.length) {
-            await uploadApplicantGradeAudit(gradeAuditFile.files[0], applicantId);
+            await uploadApplicantGradeAudit(sessionToken, gradeAuditFile.files[0], applicantId);
         }
 
         window.location.reload();
@@ -84,9 +99,9 @@
     }
 
     onMount(async () => {
-        researchFields = await fetchResearchFields();
-        professors = await fetchProfessors();
-        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+        researchFields = await fetchResearchFields(sessionToken);
+        professors = await fetchProfessors(sessionToken);
+        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
         validProfessors = await getValidProfessors(professors);
     });
 </script>
@@ -114,13 +129,13 @@
                     {/each}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary" on:click={requestEditApplicant}>Submit</button>
+            <button type="submit" class="btn btn-primary" on:click|preventDefault={requestEditApplicant}>Submit</button>
         </form>
         <form id="file-form">
             <input type="file" name="cv-file" id="cv-file" />
             <input type="file" name="diploma-file" id="diploma-file" />
             <input type="file" name="grade-audit-file" id="grade-audit-file" />
-            <input type="button" value="Submit" on:click={uploadFiles}/>
+            <input type="button" value="Submit" on:click|preventDefault={uploadFiles}/>
         </form>
         <div class="applicant-images">
             <img alt="Applicant CV" class="applicant-cv" src={applicantCVUrl}>
@@ -133,11 +148,10 @@
                 <li>
                     <span>{professor.id}</span>
                     <option value={professor.id}>{professor.name}</option>
-                    <button on:click={async (e) => {
-                        e.preventDefault();
-                        applyToProfessor(professor.id, applicantId);
+                    <button on:click|preventDefault={async () => {
+                        await applyToProfessor(sessionToken, applicantId, professor.id.toString());
 
-                        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
                     }}>Apply</button>
                 </li>
                 {/each}
@@ -148,11 +162,10 @@
                 <li>
                     <span>{professor.id}</span>
                     <option value={professor.id}>{professor.name}</option>
-                    <button on:click={async (e) => {
-                        e.preventDefault();
-                        removeApplication(professor.id, applicantId);
+                    <button on:click|preventDefault={async () => {
+                        await removeApplication(sessionToken, applicantId, professor.id.toString());
 
-                        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
                     }}>Remove</button>
                 </li>
                 {/each}
@@ -162,4 +175,16 @@
     <style lang="scss">
         @import '../../styles/global.scss';
     </style>
+
+    {#if $loginState.kind === 'admin'}
+    <span>Create Login For User</span>
+    <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+
+        <button on:click|preventDefault={requestCreateApplicantLogin}>Create Login</button>
+    </form>
+    {/if}
 </body>

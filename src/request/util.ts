@@ -1,3 +1,4 @@
+import type { LoginType } from "src/stores";
 import { HEROKU_URL } from "../globals";
 
 /**
@@ -39,30 +40,43 @@ export function getNone<T>(): Option<T> {
     return { None: {} };
 }
 
-type FailedLogin = {
-    kind: 'failed';
-    error: string;
+type SessionTypeResponse = {
+    session_type: 'Administrator' | { Applicant: number } | { Professor: number } | null;
 };
 
-export type ApplicantLogin = {
-    kind: 'applicant';
-    id: number;
+export async function getLoginType(sessionToken: string): Promise<SessionTypeResponse> {
+    let response = await fetch(`${HEROKU_URL}/rest/login`, {
+        method: 'GET',
+        headers: {
+            'X-Session-Token': sessionToken,
+        }
+    });
+
+    return response.json();
+}
+
+type SessionTokenResponse = {
+    session_token: string | null;
 };
 
-export type ProfessorLogin = {
-    kind: 'professor';
-    id: number;
-};
-
-export type AdminLogin = {
-    kind: 'admin';
-};
-
-export type LoginResponse = FailedLogin | ApplicantLogin | ProfessorLogin | AdminLogin;
-
-export async function sendLoginRequest(username: string, password: string): Promise<LoginResponse> {
-    return (await fetch(`${HEROKU_URL}/rest/login`, {
+export async function sendLoginRequest(username: string, password: string): Promise<SessionTokenResponse> {
+    let response = await fetch(`${HEROKU_URL}/rest/login`, {
         method: 'POST',
         body: JSON.stringify({ username, password }),
+    });
+
+    return response.json();
+}
+
+export async function doesAdminExist(): Promise<{ result: boolean }> {
+    return (await fetch(`${HEROKU_URL}/rest/admin-exists`, {
+        method: 'GET',
     })).json();
+}
+
+export async function createAdminLogin(username: string, password: string): Promise<void> {
+    await fetch(`${HEROKU_URL}/rest/login/admin`, {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+    });
 }

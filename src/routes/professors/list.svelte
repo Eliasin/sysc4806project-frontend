@@ -4,13 +4,18 @@
 
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { loginState } from '../../stores';
     import { onMount } from 'svelte';
     import { deleteProfessor, fetchProfessors } from '../../request/professor';
 
     let professors: Array<Professor> = [];
+    let sessionToken = null;
+    $: if ($loginState.kind !== 'not-logged-in') {
+        sessionToken = $loginState.token;
+    }
 
     onMount(async () => {
-        professors = await fetchProfessors();
+        professors = await fetchProfessors(sessionToken);
     })
 
     function doBack() {
@@ -18,8 +23,8 @@
     }
 
     async function requestDeleteProfessor(id: string) {
-        await deleteProfessor(id);
-        professors = await fetchProfessors();
+        await deleteProfessor(sessionToken, id);
+        professors = await fetchProfessors(sessionToken);
     }
 
 </script>

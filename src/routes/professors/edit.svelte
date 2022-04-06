@@ -3,14 +3,12 @@
     import { loginState } from "../../stores";
     import Edit from './_edit.svelte';
 
-    let loginStateValue = $loginState;
     let professorId: string | null = null;
 
-    professorId = $page.url.searchParams.get('id');
-    $: if (loginStateValue.kind === 'admin') {
+    $: if ($loginState.kind === 'admin') {
         professorId = $page.url.searchParams.get('id');
-    } else if (loginStateValue.kind === 'applicant') {
-        professorId = loginStateValue.id.toString();
+    } else if ($loginState.kind === 'professor') {
+        professorId = $loginState.id.toString();
     }
 
 </script>

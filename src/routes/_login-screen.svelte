@@ -1,30 +1,56 @@
 <script lang="ts">
     import { loginState } from "../stores";
-    import { sendLoginRequest } from "../request/util";
+    import { createAdminLogin, doesAdminExist, getLoginType, sendLoginRequest } from "../request/util";
+    import { onMount } from "svelte";
 
-    let loginError: string | null = null;
+    let shouldPromptFirstAdminCreation = false;
 
-    async function requestLogin(e: MouseEvent) {
-        e.preventDefault();
-
+    async function requestLogin() {
         let username = (document.getElementById('username') as HTMLInputElement).value;
         let password = (document.getElementById('password') as HTMLInputElement).value;
 
-        let loginResponse = await sendLoginRequest(username, password);
+        let response = await sendLoginRequest(username, password);
 
-        if (loginResponse.kind !== 'failed') {
-            loginState.set(loginResponse);
-        } else {
-            loginError = `Failed to login: ${loginResponse.error}`;
+        if (response.session_token !== null) {
+            let loginType = await getLoginType(response.session_token);
+
+            if (loginType.session_type === 'Administrator') {
+                loginState.set({ kind: 'admin', token: response.session_token });
+            } else if ('Professor' in loginType.session_type) {
+                loginState.set({ kind: 'professor', token: response.session_token, id: loginType.session_type.Professor });
+            } else if ('Applicant' in loginType.session_type) {
+                loginState.set({ kind: 'applicant', token: response.session_token, id: loginType.session_type.Applicant });
+            }
         }
     }
+
+    async function createFirstAdminLogin() {
+        let username = (document.getElementById('username') as HTMLInputElement).value;
+        let password = (document.getElementById('password') as HTMLInputElement).value;
+
+        await createAdminLogin(username, password);
+        window.location.reload();
+    }
+
+    onMount(async () => {
+        if (!(await doesAdminExist()).result) {
+            shouldPromptFirstAdminCreation = true;
+        }
+    });
 </script>
 
+{#if shouldPromptFirstAdminCreation}
+<span>Create First Admin Account</span>
+{/if}
 <form>
-    <span class="login-error">{loginError ?? ''}</span>
     <label for="username">Username:</label>
     <input type="text" id="username" name="username">
     <label for="password">Password:</label>
     <input type="password" id="password" name="password">
-    <button on:click={requestLogin}>Login</button>
+
+    {#if shouldPromptFirstAdminCreation}
+    <button on:click|preventDefault={createFirstAdminLogin}>Login</button>
+    {:else}
+    <button on:click|preventDefault={requestLogin}>Login</button>
+    {/if}
 </form>
