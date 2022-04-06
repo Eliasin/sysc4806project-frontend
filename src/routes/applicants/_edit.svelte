@@ -183,6 +183,7 @@
 
     <style lang="scss">
         @import '../../styles/global.scss';
+        @import '../../styles/applicant.scss';
     </style>
 
     {#if $loginState.kind === 'admin'}
