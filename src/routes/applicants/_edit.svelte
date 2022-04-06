@@ -91,7 +91,7 @@
             await uploadApplicantGradeAudit(sessionToken, gradeAuditFile.files[0], applicantId);
         }
 
-        window.location.reload();
+        window.history.go(-1);
     }
 
     function doBack() {
