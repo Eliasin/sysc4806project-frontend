@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import { loginState } from 'src/stores';
+    import { loginState } from '../../stores';
     import { createProfessor } from '../../request/professor';
 
     let sessionToken = null;
