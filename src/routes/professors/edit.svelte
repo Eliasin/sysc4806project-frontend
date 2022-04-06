@@ -11,8 +11,9 @@
         professorId = $loginState.id.toString();
     }
 
+    export let noBack;
 </script>
 
 {#if professorId !== null}
-<Edit {professorId}></Edit>
+<Edit {professorId} noBack={noBack}></Edit>
 {/if}

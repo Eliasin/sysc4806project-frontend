@@ -9,6 +9,7 @@
     import { loginState } from '../../stores';
 
     export let applicantId: string;
+    export let noBack: boolean;
     let researchFields: Array<ResearchField> = [];
     let professors: Array<Professor> = [];
     let professorsAppliedTo: Array<Professor> = [];
@@ -176,7 +177,9 @@
                 </li>
                 {/each}
             </ul>
+        {#if !noBack}
         <button id="back-button" on:click={doBack}>Back</button>
+        {/if}
 
     <style lang="scss">
         @import '../../styles/global.scss';

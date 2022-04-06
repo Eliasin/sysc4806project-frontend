@@ -7,8 +7,8 @@
     import ApplicantFiles from './_applicant-files.svelte';
 import Applicants from '../applicants.svelte';
 
-    export let professorId;
-
+    export let professorId: string;;
+    export let noBack: boolean;
     let professor: Professor | null = null;
     let professorResearchFields: Array<ResearchField> = [];
     let researchFields: Array<ResearchField> = [];
@@ -154,7 +154,11 @@ import Applicants from '../applicants.svelte';
             <button class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>
         </form>
     </div>
+
+    {#if noBack}
     <button id="back-button" on:click={doBack}>Back</button>
+    {/if}
+    
     {#if $loginState.kind === 'admin'}
     <span>Create Login For Professor</span>
     <form>

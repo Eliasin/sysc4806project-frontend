@@ -10,9 +10,9 @@
 {#if $loginState.kind === 'admin'}
 <AdminPanel></AdminPanel>
 {:else if $loginState.kind === 'professor'}
-<ProfessorEdit></ProfessorEdit>
+<ProfessorEdit noBack={true}></ProfessorEdit>
 {:else if $loginState.kind === 'applicant'}
-<ApplicantEdit></ApplicantEdit>
+<ApplicantEdit noBack={true}></ApplicantEdit>
 {:else}
 <LoginScreen></LoginScreen>
 {/if}

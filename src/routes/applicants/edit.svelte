@@ -11,8 +11,9 @@
         applicantId = $loginState.id.toString();
     }
 
+    export let noBack;
 </script>
 
 {#if applicantId !== null}
-<Edit {applicantId}></Edit>
+<Edit {applicantId} noBack={noBack}></Edit>
 {/if}
