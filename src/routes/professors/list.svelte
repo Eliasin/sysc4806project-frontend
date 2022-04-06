@@ -29,11 +29,18 @@
 
 </script>
 
-<body>
+<body class="spaced-column">
+    <button id="back-button" on:click={doBack}>Back</button>
     <div class="professor-list-container">
-        <button id="back-button" on:click={doBack}>Back</button>
         <ul id="professor-list">
-        {#each professors as professor}
+        {#each professors as professor, i}
+            {#if i == 0}
+            <li class="applicant-list-item">
+                <span class='list-title'>ID</span>
+                <span class='list-title'>Name</span>
+                <span class='list-title'>Action</span>
+                <span class='list-title'>Action</span>
+            {/if}
             <li class="professor-list-item">
                 <span>{professor.id}</span>
                 <span>{professor.name}</span>
@@ -46,5 +53,6 @@
 
     <style lang="scss">
         @import '../../styles/global.scss';
+        @import '../../styles/professor.scss';
     </style>
 </body>
