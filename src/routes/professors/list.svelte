@@ -31,7 +31,7 @@
 
 <body class="spaced-column">
     <button id="back-button" on:click={doBack}>Back</button>
-    <div class="professor-list-container">
+    <div id="professor-list-container">
         <ul id="professor-list">
         {#each professors as professor, i}
             {#if i == 0}
