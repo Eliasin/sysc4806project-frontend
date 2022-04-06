@@ -35,7 +35,7 @@
         <ul id="professor-list">
         {#each professors as professor, i}
             {#if i == 0}
-            <li class="applicant-list-item">
+            <li class="professor-list-item">
                 <span class='list-title'>ID</span>
                 <span class='list-title'>Name</span>
                 <span class='list-title'>Action</span>
