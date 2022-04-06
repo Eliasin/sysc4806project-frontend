@@ -84,7 +84,7 @@ import Applicants from '../applicants.svelte';
                     <option value={researchField.id}>{researchField.name}</option>
                     <button on:click={async (e) => {
                         e.preventDefault();
-                        await removeProfessorResearchField(sessionToken, professorId, researchField.id)
+                        await removeProfessorResearchField(sessionToken, professorId, researchField.id);
 
                         professorResearchFields = await fetchProfessorResearchFields(sessionToken, professorId);
                     }}>Delete</button>

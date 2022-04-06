@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import { createApplicantLogin, editApplicant, getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
+    import { createApplicantLogin, editApplicant, fetchApplicant, getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
     import { applyToProfessor, removeApplication, fetchProfessorsAppliedTo } from '../../request/applicant';
     import { fetchProfessorResearchFields, fetchProfessors } from '../../request/professor';
     import { createOptionNoEmpty, getNone } from '../../request/util';
@@ -12,6 +12,8 @@
     let researchFields: Array<ResearchField> = [];
     let professors: Array<Professor> = [];
     let professorsAppliedTo: Array<Professor> = [];
+    let applicant: Applicant | null = null;
+    let professorsNotAppliedTo: Array<Professor> = [];
     
     $: professorsNotAppliedTo = professors.filter(prof => !professorsAppliedTo.map(prof => prof.id).includes(prof.id));
 
@@ -26,16 +28,19 @@
     
     let applicantResearchFieldId: number | null = null;
 
-    $: getResearchField(sessionToken, applicantId).then(researchField => {
-        if (researchField !== null) {
-            applicantResearchFieldId = researchField.id
-        }
-    });
+    $: if (applicant !== null) {
+            getResearchField(sessionToken, applicant.desired_field_id.toString()).then(researchField => {
+            if (researchField !== null) {
+                applicantResearchFieldId = researchField.id
+            }
+        });
+    }
+
     let validProfessors: Array<Professor> = [];
 
-    $: getValidProfessors(professors).then(validProfs => validProfessors = validProfs);
+    $: getValidProfessors().then(validProfs => validProfessors = validProfs);
 
-    async function getValidProfessors(professors: Array<Professor>): Promise<Array<Professor>> {
+    async function getValidProfessors(): Promise<Array<Professor>> {
         return professorsNotAppliedTo.filter(async (professor: Professor) => {
             let researchFields = await fetchProfessorResearchFields(sessionToken, professor.id.toString());
             researchFields.forEach(async researchField => {
@@ -102,7 +107,8 @@
         researchFields = await fetchResearchFields(sessionToken);
         professors = await fetchProfessors(sessionToken);
         professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
-        validProfessors = await getValidProfessors(professors);
+        validProfessors = await getValidProfessors();
+        applicant = await fetchApplicant(sessionToken, applicantId);
     });
 </script>
 
