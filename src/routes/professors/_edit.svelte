@@ -58,7 +58,7 @@ import Applicants from '../applicants.svelte';
     {#if professor !== null}
     <div>Professor: {professor.name}</div>
     {/if}
-    <div class="professor-form-container">
+    <div id="professor-form-container">
         <form id="professor-form">
             <div class="form-group">
                 <label for="name">Name</label>
