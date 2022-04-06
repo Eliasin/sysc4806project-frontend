@@ -170,4 +170,9 @@ import Applicants from '../applicants.svelte';
         </form>
     </div>
     {/if}
+
+    <style lang="scss">
+        @import '../../styles/global.scss';
+        @import '../../styles/applicant.scss';
+    </style>
 </body>
