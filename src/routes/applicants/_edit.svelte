@@ -9,7 +9,7 @@
     import { loginState } from '../../stores';
 
     export let applicantId: string;
-    export let noBack: boolean;
+    export let noBack: boolean = false;
     let researchFields: Array<ResearchField> = [];
     let professors: Array<Professor> = [];
     let professorsAppliedTo: Array<Professor> = [];

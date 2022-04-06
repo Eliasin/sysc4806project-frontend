@@ -8,7 +8,7 @@
 import Applicants from '../applicants.svelte';
 
     export let professorId: string;;
-    export let noBack: boolean;
+    export let noBack: boolean = false;
     let professor: Professor | null = null;
     let professorResearchFields: Array<ResearchField> = [];
     let researchFields: Array<ResearchField> = [];
