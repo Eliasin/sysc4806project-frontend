@@ -43,10 +43,10 @@
     {#if shouldPromptFirstAdminCreation}
     <span>Create First Admin Account</span>
     {/if}
-    <form>
-        <label for="username">Username:</label>
+    <form id='login-form'>
+        <label id='username-label' for="username">Username:</label>
         <input type="text" id="username" name="username">
-        <label for="password">Password:</label>
+        <label id="password-label" for="password">Password:</label>
         <input type="password" id="password" name="password">
     
         {#if shouldPromptFirstAdminCreation}
@@ -58,5 +58,6 @@
 
     <style lang="scss">
         @import '../styles/global.scss';
+        @import '../styles/login.scss';
     </style>
 </body>
