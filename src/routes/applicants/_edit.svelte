@@ -79,6 +79,10 @@
         window.location.reload();
     }
 
+    function doBack() {
+        goto('/applicants/list');
+    }
+
     onMount(async () => {
         researchFields = await fetchResearchFields();
         professors = await fetchProfessors();
@@ -153,6 +157,7 @@
                 </li>
                 {/each}
             </ul>
+        <button id="back-button" on:click={doBack}>Back</button>
 
     <style lang="scss">
         @import '../../styles/global.scss';
