@@ -57,6 +57,36 @@ export async function uploadApplicantGradeAudit(blob: Blob, applicantId: string)
     );
 }
 
+export async function applyToProfessor(applicantId: string, professorId: string) {
+    const response = await fetch(HEROKU_URL + '/applicant/applications?prof_id=' + professorId + '&applicant_id=' + applicantId,
+    {
+        method: 'POST',
+    });
+}
+
+export async function removeApplication(applicantId: string, professorId: string) {
+    const response = await fetch(HEROKU_URL + '/applicant/applications?prof_id=' + professorId + '&applicant_id=' + applicantId,
+    {
+        method: 'DELETE',
+    });
+}
+
+export async function fetchProfessorsAppliedTo(applicantId: string): Promise<Array<Professor>> {
+    const response = await fetch(HEROKU_URL + '/applicant/applications?applicant_id=' + applicantId,
+    {
+        method: 'GET',
+    });
+    return response.json();
+}
+
+export async function getResearchField(applicantId: string): Promise<ResearchField> {
+    const response = await fetch(HEROKU_URL + '/research-field?id=' + applicantId,
+    {
+        method: 'GET',
+    });
+    return response.json();
+}
+
 export function getApplicantCVUrl(applicantId: string): string {
     return `${HEROKU_URL}/rest/applicant/files/cv?applicant_id=${applicantId}`;
 }

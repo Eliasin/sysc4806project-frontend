@@ -2,15 +2,37 @@
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import { editApplicant, getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl, uploadApplicantCV, uploadApplicantDiploma, uploadApplicantGradeAudit } from '../../request/applicant';
+    import { applyToProfessor, removeApplication, fetchProfessorsAppliedTo, getResearchField } from '../../request/applicant';
+    import { fetchProfessorResearchFields, fetchProfessors } from '../../request/professor';
     import { createOptionNoEmpty, getNone } from '../../request/util';
     import { fetchResearchFields } from '../../request/research-field';
 
     export let applicantId: string;
     let researchFields: Array<ResearchField> = [];
+    let professors: Array<Professor> = [];
+    let professorsAppliedTo: Array<Professor> = [];
 
     $: applicantCVUrl = getApplicantCVUrl(applicantId); 
     $: applicantDiplomaUrl = getApplicantDiplomaUrl(applicantId);
     $: applicantGradeAuditUrl = getApplicantGradeAuditUrl(applicantId);
+    
+    let applicantResearchFieldId: number | null = null;
+
+    $: getResearchField(applicantId).then(researchField => applicantResearchFieldId = researchField.id);
+    let validProfessors: Array<Professor> = [];
+
+    $: getValidProfessors(professors).then(validProfs => validProfessors = validProfs);
+
+    async function getValidProfessors(professors: Array<Professor>): Promise<Array<Professor>> {
+        return professors.filter(async (professor: Professor) => {
+            let researchFields = await fetchProfessorsResearchFields(professor.id);
+            researchFields.forEach(async researchField => {
+                if (researchField.id === applicantResearchFieldId) {
+                    return professor;
+                }
+            });
+        });
+    }
 
     async function requestEditApplicant(e: MouseEvent) {
         e.preventDefault();
@@ -59,6 +81,9 @@
 
     onMount(async () => {
         researchFields = await fetchResearchFields();
+        professors = await fetchProfessors();
+        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+        validProfessors = await getValidProfessors(professors);
     });
 </script>
 
@@ -98,8 +123,36 @@
             <img alt="Applicant Diploma" class="applicant-diploma" src={applicantDiplomaUrl}>
             <img alt="Applicant Grade Audit" class="applicant-grade-audit" src={applicantGradeAuditUrl}>
         </div>
-        <button on:click={() => goto('/applicants/list')}>Back</button>
-    </div>
+        <label for="apply-to-professors">Available Professors for Application</label>
+            <ul id="apply-to-professors">
+                {#each validProfessors as professor}
+                <li>
+                    <span>{professor.id}</span>
+                    <option value={professor.id}>{professor.name}</option>
+                    <button on:click={async (e) => {
+                        e.preventDefault();
+                        applyToProfessor(professor.id, applicantId);
+
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+                    }}>Apply</button>
+                </li>
+                {/each}
+            </ul>
+            <label for="applied-to-professors">Professors Applied For</label>
+            <ul id="applied-to-professors">
+                {#each professorsAppliedTo as professor}
+                <li>
+                    <span>{professor.id}</span>
+                    <option value={professor.id}>{professor.name}</option>
+                    <button on:click={async (e) => {
+                        e.preventDefault();
+                        removeApplication(professor.id, applicantId);
+
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(applicantId);
+                    }}>Remove</button>
+                </li>
+                {/each}
+            </ul>
 
     <style lang="scss">
         @import '../../styles/global.scss';
