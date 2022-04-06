@@ -2,18 +2,19 @@
     import { goto } from '$app/navigation';
     import { loginState } from '../../stores';
     import { onMount } from 'svelte';
-    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication, createProfessorLogin } from '../../request/professor';
+    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication, createProfessorLogin, type ApplicantNameIdFieldEmail } from '../../request/professor';
     import { fetchResearchFields } from '../../request/research-field';
     import ApplicantFiles from './_applicant-files.svelte';
+import Applicants from '../applicants.svelte';
 
     export let professorId;
 
     let professor: Professor | null = null;
     let professorResearchFields: Array<ResearchField> = [];
     let researchFields: Array<ResearchField> = [];
-    let pendingApplicants: Array<Applicant> = [];
-    let approvedApplicants: Array<Applicant> = [];
-    let rejectedApplicants: Array<Applicant> = [];
+    let pendingApplicants: Array<ApplicantNameIdFieldEmail> = [];
+    let approvedApplicants: Array<ApplicantNameIdFieldEmail> = [];
+    let rejectedApplicants: Array<ApplicantNameIdFieldEmail> = [];
     let sessionToken = null;
     $: if ($loginState.kind !== 'not-logged-in') {
         sessionToken = $loginState.token;
@@ -109,8 +110,9 @@
             <ul id="pending-applications">
                 {#each pendingApplicants as applicant}
                 <li type="button" class="collapsible">
-                    <div>{applicant.name}</div>
-                    <div>{applicant.email}</div>
+                    <div>Name: {applicant.name}</div>
+                    <div>Email: {applicant.email}</div>
+                    <div>Field: {applicant.desired_field}</div>
                     <button on:click={async (e) => {
                         e.preventDefault();
                         await acceptApplication(sessionToken, professorId, applicant.id);

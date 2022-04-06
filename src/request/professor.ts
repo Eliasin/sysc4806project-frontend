@@ -87,7 +87,14 @@ export async function createProfessor(sessionToken: string, name: string) {
 
 type ApplicationStatus = 'PENDING' | 'ACCEPTED' | 'DENIED';
 
-export async function fetchApplicantsForProfessor(sessionToken: string, professorId: number, status: ApplicationStatus): Promise<Array<Applicant>> {
+export type ApplicantNameIdFieldEmail = {
+    id: number;
+    desired_field: string;
+    name: string;
+    email: string;
+};
+
+export async function fetchApplicantsForProfessor(sessionToken: string, professorId: number, status: ApplicationStatus): Promise<Array<ApplicantNameIdFieldEmail>> {
     const response = await fetch(HEROKU_URL + '/rest/professor/applicants?id=' + professorId + '&status=' + status,
     {
         method: 'GET',
