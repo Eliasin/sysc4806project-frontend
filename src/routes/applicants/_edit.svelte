@@ -152,34 +152,39 @@
             <a class="applicant-diploma" href={applicantDiplomaUrl} download>
             <a class="applicant-grade-audit" href={applicantGradeAuditUrl} download>
         </div>
-        <label for="apply-to-professors">Available Professors for Application</label>
-        <ul id="apply-to-professors">
-            {#each validProfessors as professor}
-            <li>
-                <span>{professor.id}</span>
-                <option value={professor.id}>{professor.name}</option>
-                <button on:click|preventDefault={async () => {
-                    await applyToProfessor(sessionToken, applicantId, professor.id.toString());
+        <div class="labeled-list">
+            <label for="apply-to-professors">Available Professors for Application</label>
+            <ul id="apply-to-professors">
+                {#each validProfessors as professor}
+                <li>
+                    <span>{professor.id}</span>
+                    <option value={professor.id}>{professor.name}</option>
+                    <button on:click|preventDefault={async () => {
+                        await applyToProfessor(sessionToken, applicantId, professor.id.toString());
 
-                    professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
-                }}>Apply</button>
-            </li>
-            {/each}
-        </ul>
-        <label for="applied-to-professors">Professors Applied For</label>
-        <ul id="applied-to-professors">
-            {#each professorsAppliedTo as professor}
-            <li>
-                <span>{professor.id}</span>
-                <option value={professor.id}>{professor.name}</option>
-                <button on:click|preventDefault={async () => {
-                    await removeApplication(sessionToken, applicantId, professor.id.toString());
-
-                    professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
-                }}>Remove</button>
-            </li>
-            {/each}
-        </ul>
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
+                    }}>Apply</button>
+                </li>
+                {/each}
+            </ul>
+        </div>
+        <div class="labeled-list">
+            <label for="applied-to-professors">Professors Applied For</label>
+            <ul id="applied-to-professors">
+                {#each professorsAppliedTo as professor}
+                <li>
+                    <span>{professor.id}</span>
+                    <option value={professor.id}>{professor.name}</option>
+                    <button on:click|preventDefault={async () => {
+                        await removeApplication(sessionToken, applicantId, professor.id.toString());
+    
+                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
+                    }}>Remove</button>
+                </li>
+                {/each}
+            </ul>
+        </div>
+        
 
     <style lang="scss">
         @import '../../styles/global.scss';

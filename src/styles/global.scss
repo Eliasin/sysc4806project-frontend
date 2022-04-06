@@ -49,3 +49,13 @@ button {
     font-size: 1.5rem;
     font-weight: bold;
 }
+
+.labeled-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 7fr;
+
+    & > * {
+        margin: auto;
+    }
+}
