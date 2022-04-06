@@ -173,6 +173,6 @@ import Applicants from '../applicants.svelte';
 
     <style lang="scss">
         @import '../../styles/global.scss';
-        @import '../../styles/applicant.scss';
+        @import '../../styles/professor.scss';
     </style>
 </body>
