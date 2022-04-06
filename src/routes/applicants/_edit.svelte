@@ -25,7 +25,7 @@
 
     async function getValidProfessors(professors: Array<Professor>): Promise<Array<Professor>> {
         return professors.filter(async (professor: Professor) => {
-            let researchFields = await fetchProfessorsResearchFields(professor.id);
+            let researchFields = await fetchProfessorResearchFields(professor.id);
             researchFields.forEach(async researchField => {
                 if (researchField.id === applicantResearchFieldId) {
                     return professor;
