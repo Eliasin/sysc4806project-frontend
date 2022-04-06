@@ -41,7 +41,7 @@
         </form>
         <ul id="research-field-list">
             {#each researchFields as researchField}
-            <li id="research-field-item">
+            <li class="research-field-item">
                 <span>{researchField.id}</span>
                 <span>{researchField.name}</span>
                 <button on:click={() => requestDeleteResearchField(researchField.id.toString())}>Delete</button>
