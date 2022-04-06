@@ -113,8 +113,11 @@
     });
 </script>
 
+{#if !noBack}
+<button id="back-button" on:click={doBack}>Back</button>
+{/if}
 <body>
-    <div class="applicant-form-container">
+    <div id="applicant-form-container">
         <form id="applicant-form">
             <div class="form-group">
                 <label for="name">Name</label>
@@ -144,42 +147,39 @@
             <input type="file" name="grade-audit-file" id="grade-audit-file" />
             <input type="button" value="Submit" on:click|preventDefault={uploadFiles}/>
         </form>
-        <div class="applicant-images">
-            <img alt="Applicant CV" class="applicant-cv" src={applicantCVUrl}>
-            <img alt="Applicant Diploma" class="applicant-diploma" src={applicantDiplomaUrl}>
-            <img alt="Applicant Grade Audit" class="applicant-grade-audit" src={applicantGradeAuditUrl}>
+        <div id="file-downloads">
+            <a class="applicant-cv" href={applicantCVUrl} download>
+            <a class="applicant-diploma" href={applicantDiplomaUrl} download>
+            <a class="applicant-grade-audit" href={applicantGradeAuditUrl} download>
         </div>
         <label for="apply-to-professors">Available Professors for Application</label>
-            <ul id="apply-to-professors">
-                {#each validProfessors as professor}
-                <li>
-                    <span>{professor.id}</span>
-                    <option value={professor.id}>{professor.name}</option>
-                    <button on:click|preventDefault={async () => {
-                        await applyToProfessor(sessionToken, applicantId, professor.id.toString());
+        <ul id="apply-to-professors">
+            {#each validProfessors as professor}
+            <li>
+                <span>{professor.id}</span>
+                <option value={professor.id}>{professor.name}</option>
+                <button on:click|preventDefault={async () => {
+                    await applyToProfessor(sessionToken, applicantId, professor.id.toString());
 
-                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
-                    }}>Apply</button>
-                </li>
-                {/each}
-            </ul>
-            <label for="applied-to-professors">Professors Applied For</label>
-            <ul id="applied-to-professors">
-                {#each professorsAppliedTo as professor}
-                <li>
-                    <span>{professor.id}</span>
-                    <option value={professor.id}>{professor.name}</option>
-                    <button on:click|preventDefault={async () => {
-                        await removeApplication(sessionToken, applicantId, professor.id.toString());
+                    professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
+                }}>Apply</button>
+            </li>
+            {/each}
+        </ul>
+        <label for="applied-to-professors">Professors Applied For</label>
+        <ul id="applied-to-professors">
+            {#each professorsAppliedTo as professor}
+            <li>
+                <span>{professor.id}</span>
+                <option value={professor.id}>{professor.name}</option>
+                <button on:click|preventDefault={async () => {
+                    await removeApplication(sessionToken, applicantId, professor.id.toString());
 
-                        professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
-                    }}>Remove</button>
-                </li>
-                {/each}
-            </ul>
-        {#if !noBack}
-        <button id="back-button" on:click={doBack}>Back</button>
-        {/if}
+                    professorsAppliedTo = await fetchProfessorsAppliedTo(sessionToken, applicantId);
+                }}>Remove</button>
+            </li>
+            {/each}
+        </ul>
 
     <style lang="scss">
         @import '../../styles/global.scss';

@@ -29,3 +29,51 @@
         }
     }
 }
+
+#applicant-form-container {
+    #applicant-form {
+        grid-column: 1 / 3;
+    }
+
+    #file-form,
+    #file-downloads {
+        display: grid;
+        grid-template-columns: 1;
+        grid-template-rows: repeat(3, 1fr);
+
+        &#file-form {
+            grid-row: 1;
+        }
+
+        &#file-downloads {
+            grid-row: 2;
+        }
+        
+        & > * {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    #apply-to-professors,
+    #applied-to-professors {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+
+        &#apply-to-professors {
+            grid-row: 1;
+        }
+
+        &#applied-to-professors {
+            grid-row: 2;
+        }
+
+        & > * {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
