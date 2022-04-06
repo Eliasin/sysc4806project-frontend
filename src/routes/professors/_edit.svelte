@@ -64,6 +64,7 @@ import Applicants from '../applicants.svelte';
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
             </div>
+            <button class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>
         </form>
         <div id="researched-list" class="labeled-list">
             <label for="researched-field-list">Researched Fields</label>
@@ -150,7 +151,6 @@ import Applicants from '../applicants.svelte';
                 {/each}
             </ul>
         </div>
-        <button class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>
     </div>
 
     {#if noBack}
