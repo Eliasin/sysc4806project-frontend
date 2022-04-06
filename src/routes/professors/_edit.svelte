@@ -1,14 +1,18 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor } from '../../request/professor';
+    import { editProfessorName, fetchProfessor, fetchProfessorResearchFields, removeProfessorResearchField, addResearchedFieldToProfessor, fetchApplicantsForProfessor, acceptApplication, denyApplication } from '../../request/professor';
     import { fetchResearchFields } from '../../request/research-field';
+    import { getApplicantCVUrl, getApplicantDiplomaUrl, getApplicantGradeAuditUrl } from '../../request/applicant';
 
     export let professorId;
 
     let professor: Professor | null = null;
     let professorResearchFields: Array<ResearchField> = [];
     let researchFields: Array<ResearchField> = [];
+    let pendingApplicants: Array<Applicant> = [];
+    let approvedApplicants: Array<Applicant> = [];
+    let rejectedApplicants: Array<Applicant> = [];
 
     $: professorResearchFieldIds = professorResearchFields.map(field => field.id);
     $: fieldsNotResearched = researchFields.filter(field => !professorResearchFieldIds.includes(field.id));
@@ -26,6 +30,9 @@
         professor = await fetchProfessor(professorId);
         professorResearchFields = await fetchProfessorResearchFields(professorId);
         researchFields = await fetchResearchFields();
+        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
+        approvedApplicants = await fetchApplicantsForProfessor(professorId, 'ACCPETED');
+        rejectedApplicants = await fetchApplicantsForProfessor(professorId, 'DENIED');
     });
 
     function doBack() {
@@ -72,6 +79,95 @@
                         professorResearchFields = await fetchProfessorResearchFields(professorId);
                     }}>Add</button>
                 </li>
+                {/each}
+            </ul>
+            <label for="pending-application">Pending Applications</label>
+            <ul id="pending-applications">
+                {#each pendingApplicants as applicant}
+                <li button type="button" class="collapsible">
+                    <div>{applicant.name}</div>
+                    <div>{applicant.email}</div>
+                    <button on:click={async (e) => {
+                        e.preventDefault();
+                        await acceptApplication(professorId, applicant.id);
+
+                        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
+                        approvedApplicants = await fetchApplicantsForProfessor(professorId, 'ACCEPTED');
+                    }}>Approve</button>
+                    <button on:click={async (e) => {
+                        e.preventDefault();
+                        await denyApplication(professorId, applicant.id);
+
+                        pendingApplicants = await fetchApplicantsForProfessor(professorId, 'PENDING');
+                        rejectedApplicants = await fetchApplicantsForProfessor(professorId, 'DENIED');
+                    }}>Reject</button>
+                </li>
+                <div class="content">
+                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
+                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
+                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                </div>
+                <style>
+                    li {
+                        background-color: #eee;
+                        color: #444;
+                        cursor: pointer;
+                        padding: 18px;
+                        width: 100%;
+                        border: none;
+                        text-align: left;
+                        outline: none;
+                        font-size: 15px;
+                    }
+                </style>
+                {/each}
+            </ul>
+            <label for="approved-application">Approved Applications</label>
+            <ul id="approved-applications">
+                {#each approvedApplicants as applicant}
+                <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
+                <div class="content">
+                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
+                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
+                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                </div>
+                <style>
+                    li {
+                        background-color: #eee;
+                        color: #444;
+                        cursor: pointer;
+                        padding: 18px;
+                        width: 100%;
+                        border: none;
+                        text-align: left;
+                        outline: none;
+                        font-size: 15px;
+                    }
+                </style>
+                {/each}
+            </ul>
+            <label for="rejected-application">Rejected Applications</label>
+            <ul id="rejected-applications">
+                {#each rejectedApplicants as applicant}
+                <li button type="button" class="collapsible">{applicant.name, applicant.email}</li>
+                <div class="content">
+                    <div>{getApplicantGradeAuditUrl(applicant.id)}</div>
+                    <div>{getApplicantDiplomaUrl(applicant.id)}</div>
+                    <div>{getApplicantCVUrl(applicant.id)}</div>
+                </div>
+                <style>
+                    li {
+                        background-color: #eee;
+                        color: #444;
+                        cursor: pointer;
+                        padding: 18px;
+                        width: 100%;
+                        border: none;
+                        text-align: left;
+                        outline: none;
+                        font-size: 15px;
+                    }
+                </style>
                 {/each}
             </ul>
             <button class="btn btn-primary" on:click={requestEditProfessorName}>Submit</button>

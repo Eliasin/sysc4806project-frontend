@@ -60,3 +60,27 @@ export async function createProfessor(name: string) {
         }),
     });
 }
+
+type ApplicationStatus = 'PENDING' | 'ACCEPTED' | 'DENIED';
+
+export async function fetchApplicantsForProfessor(professorId: number, status: ApplicationStatus): Promise<Array<ResearchField>> {
+    const response = await fetch(HEROKU_URL + '/rest/professor/applicants?id=' + professorId + '&status=' + status,
+    {
+        method: 'GET',
+    });
+    return response.json();
+}
+
+export async function acceptApplication(professorId: number, applicantId: number) {
+    const response = await fetch(HEROKU_URL + '/professor/application/accept?applicant_id=' + applicantId + '&professor_id=' + professorId,
+    {
+        method: 'POST',
+    });
+}
+
+export async function denyApplication(professorId: number, applicantId: number) {
+    const response = await fetch(HEROKU_URL + '/professor/application/deny?applicant_id=' + applicantId + '&professor_id=' + professorId,
+    {
+        method: 'POST',
+    });
+}
