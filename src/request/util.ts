@@ -22,7 +22,7 @@ export function createOption<T>(a: T | null | undefined): Option<T> {
  * @param a a string
  * @returns an option
  */
-export function createOptionNoEmpty(a: string | null | undefined): Option<string> {
+export function createOptionNoEmpty(a: string | number | null | undefined): Option<string> {
     if (a && a !== '') {
         return {
             Some: a,

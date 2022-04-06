@@ -49,7 +49,7 @@
     async function requestEditApplicant() {
         const nameCandidate = (document.getElementById('name') as HTMLInputElement).value;
         const phoneNumberCandidate = (document.getElementById('phone_number') as HTMLInputElement).value;
-        const desiredFieldIdCandidate = (document.getElementById('desired_field_id') as HTMLInputElement).value;
+        const desiredFieldIdCandidate = parseInt((document.getElementById('desired_field_id') as HTMLInputElement).value);
         const emailCandidate = (document.getElementById('email') as HTMLInputElement).value;
 
         const editApplicantRequest: EditApplicant = {
