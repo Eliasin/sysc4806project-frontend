@@ -1,3 +1,45 @@
-html {
-    background-color: lightblue;
+$primary-color: #6930C3;
+$primar-color-dark: #4A1E8E;
+$secondary-color: #FFCA28;
+$tertiary-color: #FFF;
+$background-color: #F5F5F5;
+$typeface-family: 'Open Sans', sans-serif;
+$btn-font-size: 1.2rem;
+
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}
+
+button {
+    background-color: $primary-color;
+    color: $tertiary-color;
+    padding: 5px 10px;
+    font-size: $btn-font-size;
+    text-align: center;
+    text-decoration: none;
+    
+    &:hover {
+        background-color: $primar-color-dark;
+        cursor: pointer;
+
+        &:active {
+            background-color: $secondary-color;
+        }
+    }
+}
+
+.selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    height: 100%;
+
+    & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
