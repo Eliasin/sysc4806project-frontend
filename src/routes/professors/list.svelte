@@ -32,16 +32,16 @@
 <body class="spaced-column">
     <button id="back-button" on:click={doBack}>Back</button>
     <div id="professor-list-container">
-        <ul id="professor-list">
-        {#each professors as professor, i}
-            {#if i == 0}
+        <ul id="professor-list-titles">
             <li class="professor-list-item">
                 <span class='list-title'>ID</span>
                 <span class='list-title'>Name</span>
-                <span class='list-title'>Action</span>
-                <span class='list-title'>Action</span>
+                <span class='list-title'>Delete</span>
+                <span class='list-title'>Edit</span>
             </li>
-            {/if}
+        </ul>
+        <ul id="professor-list">
+        {#each professors as professor, i}
             <li class="professor-list-item">
                 <span>{professor.id}</span>
                 <span>{professor.name}</span>

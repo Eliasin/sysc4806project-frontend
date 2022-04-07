@@ -6,6 +6,7 @@
     import { fetchResearchFields } from '../../request/research-field';
 
     let researchFields: Array<ResearchField> = [];
+    let selectedField: string | null = null;
     let sessionToken = null;
     $: if ($loginState.kind !== 'not-logged-in') {
         sessionToken = $loginState.token;
@@ -31,10 +32,11 @@
     });
 </script>
 
-<body>
+<body class="spaced-column">
     <button on:click={() => goto('/applicants')}>Back</button>
-    <div class="applicant-form-container">
+    <div id="applicant-creation-form-container">
         <form id="applicant-form">
+            <span>Create Applicant</span>
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
@@ -49,13 +51,13 @@
             </div>
             <div class="form-group">
                 <label for="desired_field_id">Desired Field</label>
-                <select class="form-control" id="desired_field_id">
+                <select class="form-control dropdown" id="desired_field_id">
                 {#each researchFields as researchField}
                 <option value={researchField.id}>{researchField.name}</option>
                 {/each}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary" on:click|preventDefault={requestCreateApplicant} >Submit</button>
+            <button type="submit" class="btn btn-primary" on:click|preventDefault={requestCreateApplicant}>Submit</button>
         </form>
     </div>
 
