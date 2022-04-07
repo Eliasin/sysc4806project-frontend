@@ -36,6 +36,7 @@
     <button on:click={() => goto('/applicants')}>Back</button>
     <div id="applicant-creation-form-container">
         <form id="applicant-form">
+            <span>Create Applicant</span>
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
