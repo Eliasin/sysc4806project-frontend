@@ -113,12 +113,16 @@
     });
 </script>
 
-{#if !noBack}
-<button id="back-button" on:click={doBack}>Back</button>
-{/if}
-<body>
+<body class="spaced-column">
+    {#if !noBack}
+    <button id="back-button" on:click={doBack}>Back</button>
+    {/if}
     <div id="applicant-form-container">
+        {#if applicant !== null}
+        <div id="applicant-name">Applicant: {applicant.name}</div>
+        {/if}
         <form id="applicant-form">
+            <span>Modify Applicant</span>
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name">
@@ -133,31 +137,45 @@
             </div>
             <div class="form-group">
                 <label for="desired_field_id">Desired Field</label>
-                <select class="form-control" id="desired_field_id">
+                <select class="form-control dropdown" id="desired_field_id">
                     {#each researchFields as researchField}
-                    <option value={researchField.id}>{researchField.name}</option>
+                    <option class="form-option" value={researchField.id}>{researchField.name}</option>
                     {/each}
                 </select>
             </div>
             <button type="submit" class="btn btn-primary" on:click|preventDefault={requestEditApplicant}>Submit</button>
         </form>
+        {#if $loginState.kind === 'admin'}
+        <div id="account-creation">
+            <form id="account-creation-form" class="form-group">
+                <span>Create Login For Applicant</span>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username">    
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password">    
+                </div>
+                <button on:click|preventDefault={requestCreateApplicantLogin}>Create Login</button>
+            </form>
+        </div>
+        {/if}
         <form id="file-form">
+            <span>Upload Documents</span>
             <input type="file" name="cv-file" id="cv-file" />
+            <a class="applicant-cv" href={applicantCVUrl} download="applicant_cv" target="_blank"><button>Download CV</button></a>
             <input type="file" name="diploma-file" id="diploma-file" />
+            <a class="applicant-diploma" href={applicantDiplomaUrl} download="applicant_diploma" target="_blank"><button>Download Diploma</button></a>
             <input type="file" name="grade-audit-file" id="grade-audit-file" />
+            <a class="applicant-grade-audit" href={applicantGradeAuditUrl} download="applicant_aduit" target="_blank"><button>Download Audit</button></a>
             <input type="button" value="Submit" on:click|preventDefault={uploadFiles}/>
         </form>
-        <div id="file-downloads">
-            <img alt="Empty Applicant CV" class="applicant-cv" src={applicantCVUrl}>
-            <img alt="Empty Applicant Diploma" class="applicant-diploma" src={applicantDiplomaUrl}>
-            <img alt="Empty Applicant Grade Audit" class="applicant-grade-audit" src={applicantGradeAuditUrl}>
-        </div>
         <div class="labeled-list">
             <label for="apply-to-professors">Available Professors for Application</label>
             <ul id="apply-to-professors">
                 {#each validProfessors as professor}
-                <li>
-                    <span>{professor.id}</span>
+                <li class="professor-selection">
                     <option value={professor.id}>{professor.name}</option>
                     <button on:click|preventDefault={async () => {
                         await applyToProfessor(sessionToken, applicantId, professor.id.toString());
@@ -172,8 +190,7 @@
             <label for="applied-to-professors">Professors Applied For</label>
             <ul id="applied-to-professors">
                 {#each professorsAppliedTo as professor}
-                <li>
-                    <span>{professor.id}</span>
+                <li class="professor-selection">
                     <option value={professor.id}>{professor.name}</option>
                     <button on:click|preventDefault={async () => {
                         await removeApplication(sessionToken, applicantId, professor.id.toString());
@@ -190,18 +207,4 @@
         @import '../../styles/global.scss';
         @import '../../styles/applicant.scss';
     </style>
-
-    {#if $loginState.kind === 'admin'}
-    <div id="account-creation" class="labeled-list">
-        <span>Create Login For User</span>
-        <form id="account-creation-form">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password">
-
-            <button on:click|preventDefault={requestCreateApplicantLogin}>Create Login</button>
-        </form>
-    </div>
-    {/if}
 </body>
