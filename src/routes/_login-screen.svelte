@@ -44,11 +44,14 @@
     <span>Create First Admin Account</span>
     {/if}
     <form id='login-form'>
-        <label id='username-label' for="username">Username:</label>
-        <input type="text" id="username" name="username">
-        <label id="password-label" for="password">Password:</label>
-        <input type="password" id="password" name="password">
-    
+        <div class="form-group">
+            <label id='username-label' for="username">Username:</label>
+            <input type="text" id="username" name="username">    
+        </div>
+        <div class="form-group">
+            <label id="password-label" for="password">Password:</label>
+            <input type="password" id="password" name="password">
+        </div>
         {#if shouldPromptFirstAdminCreation}
         <button on:click|preventDefault={createFirstAdminLogin}>Login</button>
         {:else}
