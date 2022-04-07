@@ -33,12 +33,22 @@
 <body class="spaced-column">
     <button id="back-button" on:click={() => goto('/')}>Back</button>
     {#if $loginState.kind !== 'not-logged-in'}
-    <div id="research-field-list-container">
-        <form>
+    <div id="research-field-creation">
+        <span>Create Research Field</span>
+        <form id="research-field-creation-form" class="form-group">
             <label for="name">Name</label>
             <input id="name" type="text">
-            <button on:click={requestCreateResearchField}>Create</button>
         </form>
+        <button on:click={requestCreateResearchField}>Create</button>
+    </div>
+    <div id="research-field-list-container">
+        <ul id="research-field-list-titles">
+            <li class="research-field-item">
+                <span class='list-title'>ID</span>
+                <span class='list-title'>Name</span>
+                <span class='list-title'>Delete</span>
+            </li>
+        </ul>
         <ul id="research-field-list">
             {#each researchFields as researchField}
             <li class="research-field-item">
