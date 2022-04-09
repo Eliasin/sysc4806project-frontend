@@ -130,3 +130,13 @@ export async function createApplicantLogin(sessionToken: string, applicantId: st
         }
     });
 }
+
+export async function deleteApplicant(sessionToken: string, applicantId: string) {
+    const response = await fetch(HEROKU_URL + '/rest//applicant?id=' + applicantId,
+    {
+        method: 'DELETE',
+        headers: {
+            'X-Session-Token': sessionToken,
+        }
+    });
+}

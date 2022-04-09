@@ -44,7 +44,9 @@
             <li class="professor-list-item">
                 <span>{professor.id}</span>
                 <span>{professor.name}</span>
-                <button on:click={() => requestDeleteProfessor(professor.id.toString())}>Delete</button>
+                <button on:click={() => {
+                    requestDeleteProfessor(professor.id.toString());
+                }}>Delete</button>
                 <button on:click={() => goto('/professors/edit?id=' + professor.id)}>Edit</button>
             </li>
         {/each}

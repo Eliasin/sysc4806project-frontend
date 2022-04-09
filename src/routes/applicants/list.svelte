@@ -6,7 +6,7 @@
     import { goto } from '$app/navigation';
     import { loginState } from '../../stores';
     import { onMount } from 'svelte';
-    import { fetchApplicants } from '../../request/applicant';
+    import { fetchApplicants, deleteApplicant } from '../../request/applicant';
     import { fetchResearchFields } from '../../request/research-field';
 
     let applicants: Array<Applicant> = [];
@@ -19,6 +19,11 @@
 
     function doBack() {
         goto('/applicants/');
+    }
+
+    async function fetchDeleteApplicant(applicant_id: string) {
+        await deleteApplicant(sessionToken, applicant_id);
+        applicants = await fetchApplicants(sessionToken);
     }
 
     onMount(async () => {
@@ -47,6 +52,9 @@
                 <span>{applicant.name}</span>
                 <span>{applicant.phone_number}</span>
                 <span>{applicant.email}</span>
+                <button on:click={() => {
+                    fetchDeleteApplicant(applicant.id.toString());
+                }}>Delete</button>
                 <button on:click={() => goto('/applicants/edit?id=' + applicant.id)}>Edit</button>
             </li>
             {/each}
