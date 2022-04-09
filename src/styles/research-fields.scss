@@ -1,0 +1,65 @@
+#research-field-creation {
+    display: flex;
+    flex-flow: column;
+    row-gap: 0.5em;
+    padding: 1em;
+    margin-top: 0.5em;
+    border: 4px solid $primary-color;
+
+    & > span {
+        grid-column: 1 / 3;
+        margin: auto;
+    }
+
+    & > #research-field-creation-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 1fr;
+        row-gap: 0.5em;
+    }
+
+    & > button {
+        width: 100%;
+    }
+}
+
+#research-field-list-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+
+    & > #research-field-list,
+    & > #research-field-list-titles {
+        display: flex;
+        flex-flow: column;
+        list-style-type: none;
+        padding: 0;
+        width: 30%;
+        overflow-y: scroll;
+        max-height: 80%;
+    
+        &#research-field-list-titles {
+            overflow: hidden;
+            & > .research-field-item {
+                padding-right: 12px;
+            }
+        }   
+
+        & > .research-field-item {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+    
+            & > * {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &:not(button) {
+                    height: 4em;
+                }
+            }
+        }
+    }
+}

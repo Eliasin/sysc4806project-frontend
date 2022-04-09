@@ -1,30 +1,41 @@
-.spaced-column {
-    display: flex;
-    flex-flow: column;  
-    justify-content: space-between;
-}
+@import 'global.scss';
 
 #applicant-list-container {
     display: flex;
+    flex-flow: column;
     justify-content: center;
+    align-items: center;
     height: 90%;
 
-    #applicant-list {
+    & > #applicant-list,
+    & > #applicant-list-titles {
+        display: flex;
+        flex-flow: column;
         list-style-type: none;
         padding: 0;
-        width: max-content;
-        overflow: scroll;
+        width: 70%;
+        overflow-y: scroll;
         max-height: 80%;
-        margin: auto;
+
+        &#applicant-list-titles {
+            overflow: hidden;
+            & > .applicant-list-item {
+                padding-right: 12px;
+            }
+        }
     
         & > .applicant-list-item {
             display: grid;
-            grid-template-columns: repeat(5, 1fr) 1.2fr;
+            grid-template-columns: repeat(6, 1fr);
     
             & > * {
                 display: flex;
                 justify-content: center;
-                align-content: center;
+                align-items: center;
+
+                &:not(button) {
+                    height: 4em;
+                }
             }
         }
     }
@@ -35,23 +46,48 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 1fr 2fr 3fr 2fr;
     height: 100%;
+    row-gap: 0.2em;
+    column-gap: 0.2em;
 
-    & > #applicant-form {
+    & > #applicant-name {
         grid-column: 1 / 3;
     }
 
-    & > #file-form,
-    & > #file-downloads {
+    & > #applicant-form {
+        height: 20em;
+    }
+
+    & > #applicant-name {
+        margin: auto;
+        padding: 1em;
+        font-weight: bold;
+    }
+
+    & > #file-form {
         display: grid;
         grid-template-columns: 1fr;
         grid-auto-rows: 1fr;
 
         &#file-form {
+            display: grid;
             grid-column: 1;
-        }
+            grid-template-columns: 1fr 1fr;
+            padding: 1em;
+            border: 4px solid $primary-color;
+            grid-column: 1 / 3;
+            height: 20em;
 
-        &#file-downloads {
-            grid-column: 2;
+            & > span {
+                grid-column: 1 / 3;
+            }
+
+            & > *:not(input[type="button"   ]) {
+                margin: auto;
+            }
+
+            & > input[type="button"] {
+                grid-column: 1 / 3;
+            }
         }
         
         & > * {
@@ -61,18 +97,23 @@
         }
     }
 
-    & > #apply-to-professors,
-    & > #applied-to-professors {
+    & #apply-to-professors,
+    & #applied-to-professors {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
 
-        &#apply-to-professors {
-            grid-column: 1;
-        }
+        & > .professor-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 0.5em;
+            padding: 0.2em;
 
-        &#applied-to-professors {
-            grid-column: 2;
+            & > * {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
         & > * {
@@ -81,11 +122,43 @@
             align-items: center;
         }
     }
+}
 
-    & > #account-creation {
+#applicant-creation-form-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#applicant-form-container,
+#applicant-creation-form-container {
+    & > #applicant-form {
         display: grid;
-        margin: auto;
-        grid-row-gap: 0.2em;
-        grid-column: 1 / 3;
+        grid-template-columns: 1fr;
+        grid-auto-rows: 1fr;
+        row-gap: 0.5em;
+        border: 4px solid $primary-color;
+        padding: 0.5em;
+        justify-content: space-between;
+
+        & > span {
+            margin: auto;
+        }
+
+        & > .form-group {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+
+            & > label {
+                margin: auto;
+                padding-right: 1em;
+            }
+
+        }
+
+        & > button {
+            width: 100%;
+        }
     }
 }
