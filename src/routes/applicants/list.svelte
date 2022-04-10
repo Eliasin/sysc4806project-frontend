@@ -42,6 +42,7 @@
                 <span class='list-title'>Name</span>
                 <span class='list-title'>Phone Number</span>
                 <span class='list-title'>Email</span>
+                <span class='list-title'>Delete</span>
                 <span class='list-title'>Edit</span>
             </li>
         </ul>
